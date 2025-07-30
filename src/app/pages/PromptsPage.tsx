@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Plus, Search, Edit2, Trash2, Copy, Clock, History } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import { usePromptStore } from '../store/promptStore'
 import { FullScreenEditor } from '../components/FullScreenEditor'
 import { Button } from '../components/ui/button'
@@ -11,6 +12,7 @@ export function PromptsPage() {
   const [editorMode, setEditorMode] = useState<'create' | 'edit'>('create')
   const [editingPromptId, setEditingPromptId] = useState<string | null>(null)
   const { toast } = useToast()
+  const { t } = useTranslation()
   
   const searchQuery = usePromptStore((state) => state.searchQuery)
   const setSearchQuery = usePromptStore((state) => state.setSearchQuery)
@@ -23,17 +25,17 @@ export function PromptsPage() {
   const handleCopy = (content: string) => {
     navigator.clipboard.writeText(content)
     toast({
-      title: '已复制',
-      description: 'Prompt 内容已复制到剪贴板',
+      title: t('messages.copySuccess'),
+      description: t('messages.copyDescription'),
     })
   }
   
   const handleDelete = (id: string) => {
-    if (window.confirm('确定要删除这个 Prompt 吗？')) {
+    if (window.confirm(t('prompts.deleteConfirm'))) {
       deletePrompt(id)
       toast({
-        title: '已删除',
-        description: 'Prompt 已成功删除',
+        title: t('messages.deleteSuccess'),
+        description: t('messages.deleteDescription'),
       })
     }
   }
@@ -57,15 +59,15 @@ export function PromptsPage() {
         <div className="flex justify-between items-center mb-6">
           <div>
             <h1 className="text-2xl font-bold">
-              {selectedCategory ? selectedCategory : '全部 Prompts'}
+              {selectedCategory ? selectedCategory : t('layout.allPrompts')}
             </h1>
             <p className="text-sm text-muted-foreground mt-1">
-              共 {prompts.length} 个 Prompt
+              {t('layout.promptCount', { count: prompts.length })}
             </p>
           </div>
           <Button onClick={handleCreate}>
             <Plus className="w-4 h-4 mr-2" />
-            新建 Prompt
+            {t('editor.newPrompt')}
           </Button>
         </div>
       
@@ -73,7 +75,7 @@ export function PromptsPage() {
         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5" />
         <Input
           type="text"
-          placeholder="搜索 Prompts..."
+          placeholder={t('prompts.searchPlaceholder')}
           className="pl-10"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
@@ -84,13 +86,13 @@ export function PromptsPage() {
         {!isHydrated ? (
           <div className="bg-card rounded-lg border p-6">
             <p className="text-center text-muted-foreground">
-              加载中...
+              {t('common.loading')}
             </p>
           </div>
         ) : prompts.length === 0 ? (
           <div className="bg-card rounded-lg border p-6">
             <p className="text-center text-muted-foreground">
-              {searchQuery ? '没有找到匹配的 Prompts' : '暂无 Prompts，点击上方按钮创建您的第一个 Prompt'}
+              {searchQuery ? t('prompts.noResults') : t('prompts.emptyState')}
             </p>
           </div>
         ) : (
@@ -101,7 +103,7 @@ export function PromptsPage() {
                   <div className="flex-1">
                     <h3 className="text-lg font-semibold">{prompt.title}</h3>
                     {prompt.category && (
-                      <span className="text-sm text-muted-foreground">分类: {prompt.category}</span>
+                      <span className="text-sm text-muted-foreground">{t('prompts.category')}: {prompt.category}</span>
                     )}
                   </div>
                   <div className="flex gap-2">
@@ -109,7 +111,7 @@ export function PromptsPage() {
                       variant="ghost"
                       size="icon"
                       onClick={() => handleCopy(prompt.content)}
-                      title="复制"
+                      title={t('common.copy')}
                     >
                       <Copy className="w-4 h-4" />
                     </Button>
@@ -117,7 +119,7 @@ export function PromptsPage() {
                       variant="ghost"
                       size="icon"
                       onClick={() => handleEdit(prompt.id)}
-                      title="编辑"
+                      title={t('common.edit')}
                     >
                       <Edit2 className="w-4 h-4" />
                     </Button>
@@ -125,7 +127,7 @@ export function PromptsPage() {
                       variant="ghost"
                       size="icon"
                       onClick={() => handleDelete(prompt.id)}
-                      title="删除"
+                      title={t('common.delete')}
                     >
                       <Trash2 className="w-4 h-4" />
                     </Button>
@@ -150,7 +152,7 @@ export function PromptsPage() {
                     {prompt.versions && prompt.versions.length > 0 && (
                       <div className="flex items-center gap-1 text-muted-foreground">
                         <History className="w-3 h-3" />
-                        <span>{prompt.versions.length} 个版本</span>
+                        <span>{t('prompts.versionCount', { count: prompt.versions.length })}</span>
                       </div>
                     )}
                     <div className="flex items-center gap-1">

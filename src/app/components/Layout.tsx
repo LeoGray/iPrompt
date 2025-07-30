@@ -1,6 +1,7 @@
 import { ReactNode, useMemo } from 'react'
 import { usePromptStore } from '../store/promptStore'
 import { Hash, Folder } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import { PlatformInfo } from './PlatformInfo'
 import { SettingsDialog } from './SettingsDialog'
 
@@ -9,6 +10,7 @@ interface LayoutProps {
 }
 
 export function Layout({ children }: LayoutProps) {
+  const { t } = useTranslation()
   const prompts = usePromptStore((state) => state.prompts)
   const selectedCategory = usePromptStore((state) => state.selectedCategory)
   const setSelectedCategory = usePromptStore((state) => state.setSelectedCategory)
@@ -38,8 +40,8 @@ export function Layout({ children }: LayoutProps) {
     <div className="flex h-screen bg-background">
       <nav className="flex flex-col w-64 bg-card border-r">
         <div className="p-6 border-b">
-          <h1 className="text-2xl font-bold text-primary mb-1">iPrompt</h1>
-          <p className="text-sm text-muted-foreground">Prompt 管理系统</p>
+          <h1 className="text-2xl font-bold text-primary mb-1">{t('layout.title')}</h1>
+          <p className="text-sm text-muted-foreground">{t('layout.subtitle')}</p>
         </div>
         
         <div className="flex-1 overflow-y-auto">
@@ -54,7 +56,7 @@ export function Layout({ children }: LayoutProps) {
             >
               <div className="flex items-center gap-2">
                 <Hash className="w-4 h-4" />
-                <span>全部 Prompts</span>
+                <span>{t('layout.allPrompts')}</span>
               </div>
               <span className="text-xs">{prompts.length}</span>
             </button>
@@ -62,7 +64,7 @@ export function Layout({ children }: LayoutProps) {
             {categories.length > 0 && (
               <>
                 <div className="px-3 py-2 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                  分类
+                  {t('layout.categories')}
                 </div>
                 {categories.map((category) => (
                   <button
@@ -95,7 +97,7 @@ export function Layout({ children }: LayoutProps) {
               >
                 <div className="flex items-center gap-2">
                   <Folder className="w-4 h-4 opacity-50" />
-                  <span className="opacity-75">未分类</span>
+                  <span className="opacity-75">{t('layout.uncategorized')}</span>
                 </div>
                 <span className="text-xs">{categoryCounts['未分类']}</span>
               </button>

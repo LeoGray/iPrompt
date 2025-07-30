@@ -1,0 +1,133 @@
+{
+  "common": {
+    "save": "保存",
+    "cancel": "取消",
+    "delete": "删除",
+    "edit": "编辑",
+    "copy": "复制",
+    "confirm": "确定",
+    "search": "搜索",
+    "loading": "加载中...",
+    "noData": "暂无数据",
+    "version": "版本",
+    "statistics": "统计",
+    "total": "总数"
+  },
+  "layout": {
+    "title": "iPrompt",
+    "subtitle": "Prompt 管理系统",
+    "allPrompts": "全部 Prompts",
+    "categories": "分类",
+    "uncategorized": "未分类",
+    "promptCount": "共 {{count}} 个 Prompt",
+    "categoryCount": "{{count}} 个"
+  },
+  "editor": {
+    "newPrompt": "新建 Prompt",
+    "editPrompt": "编辑 Prompt",
+    "promptTitle": "输入 Prompt 标题",
+    "promptContent": "输入 Prompt 内容",
+    "selectCategory": "选择分类",
+    "addNewCategory": "添加新分类",
+    "newCategoryPlaceholder": "输入新分类名称",
+    "tags": "标签（用逗号分隔）",
+    "preview": "预览",
+    "edit": "编辑",
+    "split": "分屏",
+    "history": "历史版本",
+    "restore": "恢复",
+    "shortcuts": {
+      "save": "保存 (⌘S)",
+      "escape": "取消 (ESC)"
+    },
+    "toolbar": {
+      "bold": "粗体",
+      "italic": "斜体",
+      "strikethrough": "删除线",
+      "link": "链接",
+      "code": "代码",
+      "codeBlock": "代码块",
+      "quote": "引用",
+      "list": "无序列表",
+      "orderedList": "有序列表",
+      "task": "任务列表",
+      "table": "表格",
+      "image": "图片",
+      "heading": "标题",
+      "horizontalRule": "分割线"
+    }
+  },
+  "prompts": {
+    "searchPlaceholder": "搜索 Prompts...",
+    "noResults": "没有找到匹配的 Prompts",
+    "emptyState": "暂无 Prompts，点击上方按钮创建您的第一个 Prompt",
+    "deleteConfirm": "确定要删除这个 Prompt 吗？",
+    "category": "分类",
+    "tags": "标签",
+    "updatedAt": "更新于",
+    "versionCount": "{{count}} 个版本"
+  },
+  "settings": {
+    "title": "设置",
+    "description": "管理您的 Prompt 数据",
+    "dataManagement": "数据管理",
+    "exportData": "导出数据",
+    "importData": "导入数据",
+    "importing": "导入中...",
+    "createBackup": "创建备份",
+    "statistics": "统计信息",
+    "promptTotal": "Prompt 总数",
+    "categoryTotal": "分类数",
+    "language": "语言",
+    "theme": "主题",
+    "languages": {
+      "zh": "中文",
+      "en": "English",
+      "ja": "日本語"
+    }
+  },
+  "messages": {
+    "copySuccess": "已复制",
+    "copyDescription": "Prompt 内容已复制到剪贴板",
+    "saveSuccess": "保存成功",
+    "saveDescription": "Prompt 已成功保存",
+    "deleteSuccess": "已删除",
+    "deleteDescription": "Prompt 已成功删除",
+    "importSuccess": "导入成功",
+    "importDescription": "已导入 {{count}} 条 Prompt",
+    "exportSuccess": "导出成功",
+    "exportDescription": "已导出 {{count}} 条 Prompt",
+    "backupSuccess": "备份成功",
+    "backupDescription": "数据已备份到应用目录",
+    "error": "错误",
+    "unknownError": "未知错误",
+    "importError": "导入失败",
+    "exportError": "导出失败",
+    "backupError": "备份失败",
+    "backupNotSupported": "当前平台不支持自动备份，请使用导出功能",
+    "titleRequired": "请输入标题",
+    "contentRequired": "请输入内容"
+  },
+  "platform": {
+    "web": "Web 版本",
+    "desktop": "桌面版本"
+  },
+  "welcome": {
+    "title": "欢迎使用 iPrompt",
+    "subtitle": "专业的 Prompt 管理系统",
+    "description": "iPrompt 是一个专为管理和组织 AI Prompts 而设计的工具，帮助您高效地创建、编辑、分类和搜索您的 Prompts。",
+    "features": {
+      "title": "主要功能",
+      "organize": "智能分类管理",
+      "organizeDesc": "使用分类和标签系统，轻松组织您的 Prompts",
+      "search": "强大搜索功能",
+      "searchDesc": "快速搜索和筛选，立即找到所需的 Prompt",
+      "version": "版本历史追踪",
+      "versionDesc": "自动保存修改历史，随时回溯和恢复",
+      "export": "便捷导入导出",
+      "exportDesc": "支持数据导入导出，轻松备份和迁移"
+    },
+    "getStarted": "开始使用",
+    "skipIntro": "跳过介绍"
+  }
+}

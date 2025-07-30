@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { Settings, Download, Upload, Save } from 'lucide-react'
+import { Settings, Download, Upload, Save, Globe } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import {
   Dialog,
   DialogContent,
@@ -9,6 +10,13 @@ import {
   DialogTrigger,
 } from './ui/dialog'
 import { Button } from './ui/button'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from './ui/select'
 import { storageManager } from '../services/storage'
 import { usePromptStore } from '../store/promptStore'
 import { useToast } from './ui/use-toast'
@@ -17,6 +25,7 @@ export function SettingsDialog() {
   const [open, setOpen] = useState(false)
   const [importing, setImporting] = useState(false)
   const { toast } = useToast()
+  const { t, i18n } = useTranslation()
   const prompts = usePromptStore((state) => state.prompts)
 
   const handleExport = async () => {
@@ -144,6 +153,21 @@ export function SettingsDialog() {
               <p>Prompt 总数: {prompts.length}</p>
               <p>分类数: {new Set(prompts.map(p => p.category).filter(Boolean)).size}</p>
             </div>
+          </div>
+
+          <div className="space-y-2">
+            <h3 className="text-sm font-medium">语言设置</h3>
+            <Select value={i18n.language} onValueChange={(lng) => i18n.changeLanguage(lng)}>
+              <SelectTrigger className="w-full">
+                <Globe className="mr-2 h-4 w-4" />
+                <SelectValue placeholder="选择语言" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="zh">中文</SelectItem>
+                <SelectItem value="en">English</SelectItem>
+                <SelectItem value="ja">日本語</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
         </div>
       </DialogContent>

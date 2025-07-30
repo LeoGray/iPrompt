@@ -1,0 +1,117 @@
+{
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "copy": "Copy",
+    "confirm": "Confirm",
+    "search": "Search",
+    "loading": "Loading...",
+    "noData": "No data",
+    "version": "Version",
+    "statistics": "Statistics",
+    "total": "Total"
+  },
+  "layout": {
+    "title": "iPrompt",
+    "subtitle": "Prompt Management System",
+    "allPrompts": "All Prompts",
+    "categories": "Categories",
+    "uncategorized": "Uncategorized",
+    "promptCount": "Total {{count}} prompts",
+    "categoryCount": "{{count}}"
+  },
+  "editor": {
+    "newPrompt": "New Prompt",
+    "editPrompt": "Edit Prompt",
+    "promptTitle": "Enter prompt title",
+    "promptContent": "Enter prompt content",
+    "selectCategory": "Select category",
+    "addNewCategory": "Add new category",
+    "newCategoryPlaceholder": "Enter new category name",
+    "tags": "Tags (comma separated)",
+    "preview": "Preview",
+    "edit": "Edit",
+    "split": "Split",
+    "history": "History",
+    "restore": "Restore",
+    "shortcuts": {
+      "save": "Save (⌘S)",
+      "escape": "Cancel (ESC)"
+    }
+  },
+  "prompts": {
+    "searchPlaceholder": "Search prompts...",
+    "noResults": "No matching prompts found",
+    "emptyState": "No prompts yet, click the button above to create your first prompt",
+    "deleteConfirm": "Are you sure you want to delete this prompt?",
+    "category": "Category",
+    "tags": "Tags",
+    "updatedAt": "Updated",
+    "versionCount": "{{count}} versions"
+  },
+  "settings": {
+    "title": "Settings",
+    "description": "Manage your prompt data",
+    "dataManagement": "Data Management",
+    "exportData": "Export Data",
+    "importData": "Import Data",
+    "importing": "Importing...",
+    "createBackup": "Create Backup",
+    "statistics": "Statistics",
+    "promptTotal": "Total Prompts",
+    "categoryTotal": "Total Categories",
+    "language": "Language",
+    "theme": "Theme",
+    "languages": {
+      "zh": "中文",
+      "en": "English",
+      "ja": "日本語"
+    }
+  },
+  "messages": {
+    "copySuccess": "Copied",
+    "copyDescription": "Prompt content copied to clipboard",
+    "saveSuccess": "Saved",
+    "saveDescription": "Prompt saved successfully",
+    "deleteSuccess": "Deleted",
+    "deleteDescription": "Prompt deleted successfully",
+    "importSuccess": "Import Successful",
+    "importDescription": "Imported {{count}} prompts",
+    "exportSuccess": "Export Successful",
+    "exportDescription": "Exported {{count}} prompts",
+    "backupSuccess": "Backup Successful",
+    "backupDescription": "Data backed up to application directory",
+    "error": "Error",
+    "unknownError": "Unknown error",
+    "importError": "Import failed",
+    "exportError": "Export failed",
+    "backupError": "Backup failed",
+    "backupNotSupported": "Automatic backup not supported on this platform, please use export",
+    "titleRequired": "Please enter a title",
+    "contentRequired": "Please enter content"
+  },
+  "platform": {
+    "web": "Web Version",
+    "desktop": "Desktop Version"
+  },
+  "welcome": {
+    "title": "Welcome to iPrompt",
+    "subtitle": "Professional Prompt Management System",
+    "description": "iPrompt is a tool designed specifically for managing and organizing AI Prompts, helping you efficiently create, edit, categorize, and search your prompts.",
+    "features": {
+      "title": "Key Features",
+      "organize": "Smart Category Management",
+      "organizeDesc": "Easily organize your prompts using categories and tags",
+      "search": "Powerful Search",
+      "searchDesc": "Quick search and filter to find the prompt you need instantly",
+      "version": "Version History Tracking",
+      "versionDesc": "Automatically save revision history, rollback and restore anytime",
+      "export": "Easy Import/Export",
+      "exportDesc": "Support data import/export for easy backup and migration"
+    },
+    "getStarted": "Get Started",
+    "skipIntro": "Skip Intro"
+  }
+}
