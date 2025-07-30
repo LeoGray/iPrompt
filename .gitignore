@@ -58,7 +58,7 @@ src-tauri/Cargo.lock
 *.tar.gz
 
 # Tauri generated icons (keep the source svg)
-src-tauri/icons/
+# src-tauri/icons/  # Commented out - we need these icons for GitHub Actions
 !src-tauri/app-icon.svg
 
 # Docker volumes (if using local volumes)
