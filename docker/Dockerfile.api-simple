@@ -1,0 +1,22 @@
+# Simple API Dockerfile for development
+FROM node:20-alpine
+
+WORKDIR /app
+
+# Copy package files
+COPY package*.json ./
+
+# Install all dependencies (including dev)
+RUN npm ci
+
+# Copy source code
+COPY . .
+
+# Set environment
+ENV NODE_ENV=development
+ENV PORT=18080
+
+EXPOSE 18080
+
+# Run API directly with tsx
+CMD ["npx", "tsx", "src/api/index.ts"]

@@ -1,0 +1,13 @@
+# 临时 Dockerfile 用于生成 package-lock.json
+FROM node:20-alpine
+
+WORKDIR /app
+
+# 只复制 package.json
+COPY package.json ./
+
+# 安装依赖并生成 package-lock.json
+RUN npm install
+
+# 设置一个命令以保持容器运行
+CMD ["sh", "-c", "echo 'package-lock.json generated' && tail -f /dev/null"]

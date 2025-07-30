@@ -1,0 +1,22 @@
+# Simple development Dockerfile for web development
+FROM node:20-alpine
+
+# Install git for development
+RUN apk add --no-cache git
+
+WORKDIR /app
+
+# Copy package files first
+COPY package.json ./
+
+# Install dependencies
+RUN npm install
+
+# Copy the rest of the application
+COPY . .
+
+# Expose development ports
+EXPOSE 13000 15173
+
+# Development command
+CMD ["npm", "run", "dev:web"]

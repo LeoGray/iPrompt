@@ -1,0 +1,17 @@
+# Development Dockerfile for hot-reload development
+FROM node:20-alpine
+
+# Install git for development
+RUN apk add --no-cache git
+
+WORKDIR /app
+
+# Install dependencies
+COPY package*.json ./
+RUN npm ci
+
+# Expose development ports
+EXPOSE 13000 15173
+
+# Development command
+CMD ["npm", "run", "dev:web"]

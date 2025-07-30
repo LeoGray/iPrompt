@@ -1,0 +1,43 @@
+{
+  "productName": "iPrompt",
+  "version": "0.1.0",
+  "identifier": "com.leogray.iprompt",
+  "build": {
+    "beforeDevCommand": "npx vite --host 0.0.0.0 --port 13000 --mode tauri",
+    "beforeBuildCommand": "npx tsc && npx vite build --mode tauri",
+    "frontendDist": "../dist",
+    "devUrl": "http://localhost:13000"
+  },
+  "app": {
+    "withGlobalTauri": true,
+    "windows": [
+      {
+        "fullscreen": false,
+        "resizable": true,
+        "title": "iPrompt",
+        "width": 1200,
+        "height": 800,
+        "minWidth": 800,
+        "minHeight": 600
+      }
+    ],
+    "security": {
+      "csp": null,
+      "dangerousDisableAssetCspModification": false,
+      "assetProtocol": {
+        "enable": false
+      }
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": "all",
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ]
+  }
+}

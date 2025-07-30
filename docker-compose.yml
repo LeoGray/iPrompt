@@ -1,0 +1,67 @@
+services:
+  # Web Frontend Development
+  web-dev:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.dev-simple
+    container_name: iprompt-web-dev
+    volumes:
+      - .:/app
+      - /app/node_modules
+    ports:
+      - "13000:13000"  # Vite dev server (3000 -> 13000)
+      - "15173:15173"  # Vite HMR port (5173 -> 15173)
+    environment:
+      - NODE_ENV=development
+      - VITE_API_URL=http://localhost:18080
+      - VITE_PORT=13000
+    networks:
+      - iprompt-network
+    command: npm run dev:web
+
+  # API Backend Service (简化版，仅用于未来扩展)
+  api:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.api-simple
+    container_name: iprompt-api
+    volumes:
+      - .:/app
+      - /app/node_modules
+    ports:
+      - "18080:18080"  # API server (8080 -> 18080)
+    environment:
+      - NODE_ENV=development
+      - PORT=18080
+    networks:
+      - iprompt-network
+
+  # Tauri Development Environment
+  tauri-dev:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.tauri-dev
+    container_name: iprompt-tauri-dev
+    volumes:
+      - .:/app
+      - cargo-cache:/home/developer/.cargo/registry
+      - target-cache:/app/target
+    environment:
+      - RUST_BACKTRACE=1
+      - NODE_ENV=development
+    ports:
+      - "11420:1420"  # Tauri dev server
+    networks:
+      - iprompt-network
+    working_dir: /app
+    command: cargo tauri dev
+    profiles:
+      - tauri
+
+volumes:
+  cargo-cache:
+  target-cache:
+
+networks:
+  iprompt-network:
+    driver: bridge
