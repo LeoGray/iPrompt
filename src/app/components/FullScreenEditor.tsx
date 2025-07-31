@@ -4,6 +4,7 @@ import { Button } from './ui/button'
 import { Input } from './ui/input'
 import { Textarea } from './ui/textarea'
 import { useToast } from './ui/use-toast'
+import { useTranslation } from 'react-i18next'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import { 
@@ -59,6 +60,7 @@ export function FullScreenEditor({ promptId, isOpen, onClose, mode }: FullScreen
   const updatePrompt = usePromptStore((state) => state.updatePrompt)
   const addPrompt = usePromptStore((state) => state.addPrompt)
   const { toast } = useToast()
+  const { t } = useTranslation()
   
   const prompt = promptId && mode === 'edit' ? getPromptById(promptId) : null
   
@@ -104,8 +106,8 @@ export function FullScreenEditor({ promptId, isOpen, onClose, mode }: FullScreen
   const handleSave = () => {
     if (!title.trim() || !content.trim()) {
       toast({
-        title: '错误',
-        description: '标题和内容不能为空',
+        title: t('messages.error'),
+        description: !title.trim() ? t('messages.titleRequired') : t('messages.contentRequired'),
         variant: 'destructive',
       })
       return
@@ -121,14 +123,14 @@ export function FullScreenEditor({ promptId, isOpen, onClose, mode }: FullScreen
     if (mode === 'edit' && promptId) {
       updatePrompt(promptId, promptData)
       toast({
-        title: '成功',
-        description: 'Prompt 已更新',
+        title: t('messages.saveSuccess'),
+        description: t('messages.saveDescription'),
       })
     } else {
       addPrompt(promptData)
       toast({
-        title: '成功',
-        description: 'Prompt 已创建',
+        title: t('messages.saveSuccess'),
+        description: t('messages.saveDescription'),
       })
     }
     
@@ -139,8 +141,8 @@ export function FullScreenEditor({ promptId, isOpen, onClose, mode }: FullScreen
     setContent(versionContent)
     setShowVersions(false)
     toast({
-      title: '已恢复',
-      description: '已恢复到选中的版本，请保存以应用更改',
+      title: t('editor.restore'),
+      description: t('messages.restoreDescription'),
     })
   }
   
@@ -187,12 +189,12 @@ export function FullScreenEditor({ promptId, isOpen, onClose, mode }: FullScreen
             variant="ghost"
             size="icon"
             onClick={onClose}
-            title="关闭 (Esc)"
+            title={t('editor.shortcuts.escape')}
           >
             <ChevronLeft className="h-5 w-5" />
           </Button>
           <h2 className="text-xl font-semibold">
-            {mode === 'create' ? '创建新 Prompt' : '编辑 Prompt'}
+            {mode === 'create' ? t('editor.newPrompt') : t('editor.editPrompt')}
           </h2>
         </div>
         
@@ -205,7 +207,7 @@ export function FullScreenEditor({ promptId, isOpen, onClose, mode }: FullScreen
               className="rounded-r-none"
             >
               <Edit className="w-4 h-4 mr-1" />
-              编辑
+              {t('editor.edit')}
             </Button>
             <Button
               variant={viewMode === 'split' ? 'default' : 'ghost'}
@@ -214,7 +216,7 @@ export function FullScreenEditor({ promptId, isOpen, onClose, mode }: FullScreen
               className="rounded-none border-x"
             >
               <FileText className="w-4 h-4 mr-1" />
-              分屏
+              {t('editor.split')}
             </Button>
             <Button
               variant={viewMode === 'preview' ? 'default' : 'ghost'}
@@ -223,7 +225,7 @@ export function FullScreenEditor({ promptId, isOpen, onClose, mode }: FullScreen
               className="rounded-l-none"
             >
               <Eye className="w-4 h-4 mr-1" />
-              预览
+              {t('editor.preview')}
             </Button>
           </div>
           {mode === 'edit' && prompt?.versions && prompt.versions.length > 0 && (
@@ -233,18 +235,18 @@ export function FullScreenEditor({ promptId, isOpen, onClose, mode }: FullScreen
               onClick={() => setShowVersions(!showVersions)}
             >
               <History className="w-4 h-4 mr-2" />
-              历史版本 ({prompt.versions.length})
+              {t('editor.history')} ({prompt.versions.length})
             </Button>
           )}
           <Button
             variant="outline"
             onClick={() => onClose()}
           >
-            取消
+            {t('common.cancel')}
           </Button>
           <Button onClick={handleSave}>
             <Save className="w-4 h-4 mr-2" />
-            保存 (⌘S)
+            {t('editor.shortcuts.save')}
           </Button>
         </div>
       </div>
@@ -258,7 +260,7 @@ export function FullScreenEditor({ promptId, isOpen, onClose, mode }: FullScreen
             <div className="mb-4">
               <Input
                 id="title"
-                placeholder="输入 Prompt 标题"
+                placeholder={t('editor.promptTitle')}
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 className="text-xl font-semibold border-0 border-b rounded-none px-0 focus-visible:ring-0 focus-visible:ring-offset-0"
@@ -271,7 +273,7 @@ export function FullScreenEditor({ promptId, isOpen, onClose, mode }: FullScreen
                 {!isAddingCategory ? (
                   <Select value={category} onValueChange={handleCategoryChange}>
                     <SelectTrigger>
-                      <SelectValue placeholder="选择分类" />
+                      <SelectValue placeholder={t('editor.selectCategory')} />
                     </SelectTrigger>
                     <SelectContent>
                       {categories.map((cat) => (
@@ -279,13 +281,13 @@ export function FullScreenEditor({ promptId, isOpen, onClose, mode }: FullScreen
                           {cat}
                         </SelectItem>
                       ))}
-                      <SelectItem value="add-new">+ 添加新分类</SelectItem>
+                      <SelectItem value="add-new">+ {t('editor.addNewCategory')}</SelectItem>
                     </SelectContent>
                   </Select>
                 ) : (
                   <div className="flex gap-2">
                     <Input
-                      placeholder="输入新分类名称"
+                      placeholder={t('editor.newCategoryPlaceholder')}
                       value={newCategory}
                       onChange={(e) => setNewCategory(e.target.value)}
                       onKeyDown={(e) => {
@@ -304,7 +306,7 @@ export function FullScreenEditor({ promptId, isOpen, onClose, mode }: FullScreen
                         }
                       }}
                     >
-                      确定
+                      {t('common.confirm')}
                     </Button>
                   </div>
                 )}
@@ -313,7 +315,7 @@ export function FullScreenEditor({ promptId, isOpen, onClose, mode }: FullScreen
               <div className="space-y-1">
                 <Input
                   id="tags"
-                  placeholder="标签（用逗号分隔）"
+                  placeholder={t('editor.tags')}
                   value={tags}
                   onChange={(e) => setTags(e.target.value)}
                 />
@@ -328,7 +330,7 @@ export function FullScreenEditor({ promptId, isOpen, onClose, mode }: FullScreen
                     {/* 标题组 */}
                     <Select onValueChange={(value) => insertMarkdown('\n' + value + ' ', '')}>
                       <SelectTrigger className="w-24 h-8">
-                        <SelectValue placeholder="标题" />
+                        <SelectValue placeholder={t('editor.toolbar.heading')} />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="#">H1</SelectItem>
@@ -347,7 +349,7 @@ export function FullScreenEditor({ promptId, isOpen, onClose, mode }: FullScreen
                       variant="ghost"
                       size="sm"
                       onClick={() => insertMarkdown('**', '**')}
-                      title="粗体 (Ctrl+B)"
+                      title={t('editor.toolbar.bold')}
                     >
                       <Bold className="h-4 w-4" />
                     </Button>
@@ -355,7 +357,7 @@ export function FullScreenEditor({ promptId, isOpen, onClose, mode }: FullScreen
                       variant="ghost"
                       size="sm"
                       onClick={() => insertMarkdown('*', '*')}
-                      title="斜体 (Ctrl+I)"
+                      title={t('editor.toolbar.italic')}
                     >
                       <Italic className="h-4 w-4" />
                     </Button>
@@ -363,7 +365,7 @@ export function FullScreenEditor({ promptId, isOpen, onClose, mode }: FullScreen
                       variant="ghost"
                       size="sm"
                       onClick={() => insertMarkdown('~~', '~~')}
-                      title="删除线"
+                      title={t('editor.toolbar.strikethrough')}
                     >
                       <Strikethrough className="h-4 w-4" />
                     </Button>
@@ -371,7 +373,7 @@ export function FullScreenEditor({ promptId, isOpen, onClose, mode }: FullScreen
                       variant="ghost"
                       size="sm"
                       onClick={() => insertMarkdown('`', '`')}
-                      title="行内代码"
+                      title={t('editor.toolbar.code')}
                     >
                       <Code className="h-4 w-4" />
                     </Button>
@@ -383,7 +385,7 @@ export function FullScreenEditor({ promptId, isOpen, onClose, mode }: FullScreen
                       variant="ghost"
                       size="sm"
                       onClick={() => insertMarkdown('\n- ', '')}
-                      title="无序列表"
+                      title={t('editor.toolbar.list')}
                     >
                       <List className="h-4 w-4" />
                     </Button>
@@ -391,7 +393,7 @@ export function FullScreenEditor({ promptId, isOpen, onClose, mode }: FullScreen
                       variant="ghost"
                       size="sm"
                       onClick={() => insertMarkdown('\n1. ', '')}
-                      title="有序列表"
+                      title={t('editor.toolbar.orderedList')}
                     >
                       <ListOrdered className="h-4 w-4" />
                     </Button>
@@ -399,7 +401,7 @@ export function FullScreenEditor({ promptId, isOpen, onClose, mode }: FullScreen
                       variant="ghost"
                       size="sm"
                       onClick={() => insertMarkdown('\n- [ ] ', '')}
-                      title="任务列表"
+                      title={t('editor.toolbar.task')}
                     >
                       <CheckSquare className="h-4 w-4" />
                     </Button>
@@ -411,7 +413,7 @@ export function FullScreenEditor({ promptId, isOpen, onClose, mode }: FullScreen
                       variant="ghost"
                       size="sm"
                       onClick={() => insertMarkdown('\n> ', '')}
-                      title="引用"
+                      title={t('editor.toolbar.quote')}
                     >
                       <Quote className="h-4 w-4" />
                     </Button>
@@ -419,7 +421,7 @@ export function FullScreenEditor({ promptId, isOpen, onClose, mode }: FullScreen
                       variant="ghost"
                       size="sm"
                       onClick={() => insertMarkdown('\n```\n', '\n```\n')}
-                      title="代码块"
+                      title={t('editor.toolbar.codeBlock')}
                     >
                       <FileCode className="h-4 w-4" />
                     </Button>
@@ -427,7 +429,7 @@ export function FullScreenEditor({ promptId, isOpen, onClose, mode }: FullScreen
                       variant="ghost"
                       size="sm"
                       onClick={() => insertMarkdown('\n---\n', '')}
-                      title="分割线"
+                      title={t('editor.toolbar.horizontalRule')}
                     >
                       <Minus className="h-4 w-4" />
                     </Button>
@@ -439,7 +441,7 @@ export function FullScreenEditor({ promptId, isOpen, onClose, mode }: FullScreen
                       variant="ghost"
                       size="sm"
                       onClick={() => insertMarkdown('[', '](url)')}
-                      title="链接"
+                      title={t('editor.toolbar.link')}
                     >
                       <Link className="h-4 w-4" />
                     </Button>
@@ -462,7 +464,7 @@ export function FullScreenEditor({ promptId, isOpen, onClose, mode }: FullScreen
                   </div>
                   <Textarea
                     id="content"
-                    placeholder="输入 Prompt 内容（支持 Markdown 格式）..."
+                    placeholder={t('editor.promptContent') + '...'}
                     value={content}
                     onChange={(e) => setContent(e.target.value)}
                     className="flex-1 resize-none font-mono text-base leading-relaxed p-4 border-0 focus-visible:ring-0 focus-visible:ring-offset-0"
@@ -531,7 +533,7 @@ export function FullScreenEditor({ promptId, isOpen, onClose, mode }: FullScreen
                         variant="ghost"
                         size="sm"
                         onClick={() => insertMarkdown('\n```\n', '\n```\n')}
-                        title="代码块"
+                        title={t('editor.toolbar.codeBlock')}
                       >
                         <FileCode className="h-4 w-4" />
                       </Button>
@@ -551,7 +553,7 @@ export function FullScreenEditor({ promptId, isOpen, onClose, mode }: FullScreen
                         variant="ghost"
                         size="sm"
                         onClick={() => insertMarkdown('\n> ', '')}
-                        title="引用"
+                        title={t('editor.toolbar.quote')}
                       >
                         <Quote className="h-4 w-4" />
                       </Button>
@@ -559,14 +561,14 @@ export function FullScreenEditor({ promptId, isOpen, onClose, mode }: FullScreen
                         variant="ghost"
                         size="sm"
                         onClick={() => insertMarkdown('[', '](url)')}
-                        title="链接"
+                        title={t('editor.toolbar.link')}
                       >
                         <Link className="h-4 w-4" />
                       </Button>
                     </div>
                     <Textarea
                       id="content"
-                      placeholder="输入 Prompt 内容（支持 Markdown 格式）..."
+                      placeholder={t('editor.promptContent') + '...'}
                       value={content}
                       onChange={(e) => setContent(e.target.value)}
                       className="flex-1 resize-none font-mono text-base leading-relaxed p-4 border-0 focus-visible:ring-0 focus-visible:ring-offset-0"
@@ -578,7 +580,7 @@ export function FullScreenEditor({ promptId, isOpen, onClose, mode }: FullScreen
                   <div className="flex-1 overflow-y-auto p-6">
                     <div className="prose prose-neutral dark:prose-invert max-w-none">
                       <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                        {content || '*暂无内容*'}
+                        {content || `*${t('common.noData')}*`}
                       </ReactMarkdown>
                     </div>
                   </div>
@@ -592,7 +594,7 @@ export function FullScreenEditor({ promptId, isOpen, onClose, mode }: FullScreen
         {showVersions && prompt?.versions && (
           <div className="w-80 p-4 overflow-y-auto bg-muted/10">
             <h3 className="text-base font-semibold mb-3 flex items-center justify-between">
-              <span>版本历史</span>
+              <span>{t('editor.history')}</span>
               <Button
                 variant="ghost"
                 size="sm"
@@ -605,7 +607,7 @@ export function FullScreenEditor({ promptId, isOpen, onClose, mode }: FullScreen
             <div className="space-y-3">
               <div className="p-3 border rounded-lg bg-muted/50">
                 <div className="flex justify-between items-start mb-2">
-                  <span className="text-sm font-medium">当前版本</span>
+                  <span className="text-sm font-medium">{t('editor.currentVersion')}</span>
                   <span className="text-xs text-muted-foreground">
                     {new Date(prompt.updatedAt).toLocaleString()}
                   </span>
@@ -616,7 +618,7 @@ export function FullScreenEditor({ promptId, isOpen, onClose, mode }: FullScreen
               {prompt.versions.map((version, index) => (
                 <div key={version.id} className="p-3 border rounded-lg hover:bg-muted/30">
                   <div className="flex justify-between items-start mb-2">
-                    <span className="text-sm font-medium">版本 {prompt.versions!.length - index}</span>
+                    <span className="text-sm font-medium">{t('common.version')} {prompt.versions!.length - index}</span>
                     <div className="flex items-center gap-2">
                       <span className="text-xs text-muted-foreground">
                         {new Date(version.createdAt).toLocaleString()}
@@ -627,7 +629,7 @@ export function FullScreenEditor({ promptId, isOpen, onClose, mode }: FullScreen
                         onClick={() => handleRestoreVersion(version.content)}
                       >
                         <RotateCcw className="w-3 h-3 mr-1" />
-                        恢复
+                        {t('editor.restore')}
                       </Button>
                     </div>
                   </div>

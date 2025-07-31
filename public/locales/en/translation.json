@@ -11,7 +11,8 @@
     "noData": "No data",
     "version": "Version",
     "statistics": "Statistics",
-    "total": "Total"
+    "total": "Total",
+    "characters": "characters"
   },
   "layout": {
     "title": "iPrompt",
@@ -36,6 +37,7 @@
     "split": "Split",
     "history": "History",
     "restore": "Restore",
+    "currentVersion": "Current Version",
     "shortcuts": {
       "save": "Save (⌘S)",
       "escape": "Cancel (ESC)"
@@ -90,11 +92,14 @@
     "backupError": "Backup failed",
     "backupNotSupported": "Automatic backup not supported on this platform, please use export",
     "titleRequired": "Please enter a title",
-    "contentRequired": "Please enter content"
+    "contentRequired": "Please enter content",
+    "restoreDescription": "Restored to selected version, please save to apply changes"
   },
   "platform": {
     "web": "Web Version",
-    "desktop": "Desktop Version"
+    "desktop": "Desktop Version",
+    "environment": "Environment",
+    "platform": "Platform"
   },
   "welcome": {
     "title": "Welcome to iPrompt",
@@ -113,5 +118,25 @@
     },
     "getStarted": "Get Started",
     "skipIntro": "Skip Intro"
+  },
+  "samplePrompts": {
+    "codeReview": {
+      "title": "Code Review Assistant",
+      "content": "As a senior developer, please review the following code. Focus on:\n1. Code quality and readability\n2. Potential bugs and security issues\n3. Performance optimization suggestions\n4. Best practice recommendations\n\nCode:\n[Paste code here]",
+      "category": "Development",
+      "tags": ["Code Review", "Dev Tools", "代码审查"]
+    },
+    "translator": {
+      "title": "Chinese-English Translation Expert",
+      "content": "As a professional Chinese-English translator, I will provide content in Chinese or English. Please:\n1. Translate accurately\n2. Maintain the tone and style of the original\n3. Provide multiple translation options for technical terms\n4. Provide cultural context when necessary\n\nContent to translate:\n[Enter content here]",
+      "category": "Translation",
+      "tags": ["Translation", "Chinese-English", "翻译"]
+    },
+    "weeklyReport": {
+      "title": "Weekly Report Generator",
+      "content": "Based on the work content I provide, help me generate a professional weekly report. Format requirements:\n1. Work completed this week (sorted by importance)\n2. Problems encountered and solutions\n3. Next week's work plan\n4. Support or resources needed\n\nThis week's work:\n[List this week's work here]",
+      "category": "Writing",
+      "tags": ["Weekly Report", "Work Summary", "周报"]
+    }
   }
 }

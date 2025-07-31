@@ -32,13 +32,13 @@ export function SettingsDialog() {
     try {
       await storageManager.exportToFile()
       toast({
-        title: '导出成功',
-        description: `已导出 ${prompts.length} 条 Prompt`,
+        title: t('messages.exportSuccess'),
+        description: t('messages.exportDescription', { count: prompts.length }),
       })
     } catch (error) {
       toast({
-        title: '导出失败',
-        description: error instanceof Error ? error.message : '未知错误',
+        title: t('messages.exportError'),
+        description: error instanceof Error ? error.message : t('messages.unknownError'),
         variant: 'destructive',
       })
     }
@@ -56,13 +56,13 @@ export function SettingsDialog() {
       window.location.reload()
       
       toast({
-        title: '导入成功',
-        description: `已导入 ${data.prompts.length} 条 Prompt`,
+        title: t('messages.importSuccess'),
+        description: t('messages.importDescription', { count: data.prompts.length }),
       })
     } catch (error) {
       toast({
-        title: '导入失败',
-        description: error instanceof Error ? error.message : '未知错误',
+        title: t('messages.importError'),
+        description: error instanceof Error ? error.message : t('messages.unknownError'),
         variant: 'destructive',
       })
     } finally {
@@ -76,14 +76,14 @@ export function SettingsDialog() {
     try {
       await storageManager.createBackup()
       toast({
-        title: '备份成功',
-        description: '数据已备份到应用目录',
+        title: t('messages.backupSuccess'),
+        description: t('messages.backupDescription'),
       })
     } catch (error) {
       // Backup might not be supported on web
       toast({
-        title: '备份失败',
-        description: '当前平台不支持自动备份，请使用导出功能',
+        title: t('messages.backupError'),
+        description: t('messages.backupNotSupported'),
         variant: 'destructive',
       })
     }
@@ -98,14 +98,14 @@ export function SettingsDialog() {
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>设置</DialogTitle>
+          <DialogTitle>{t('settings.title')}</DialogTitle>
           <DialogDescription>
-            管理您的 Prompt 数据
+            {t('settings.description')}
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-4">
           <div className="space-y-2">
-            <h3 className="text-sm font-medium">数据管理</h3>
+            <h3 className="text-sm font-medium">{t('settings.dataManagement')}</h3>
             <div className="space-y-2">
               <Button
                 onClick={handleExport}
@@ -113,7 +113,7 @@ export function SettingsDialog() {
                 variant="outline"
               >
                 <Download className="mr-2 h-4 w-4" />
-                导出数据
+                {t('settings.exportData')}
               </Button>
               
               <div className="relative">
@@ -130,7 +130,7 @@ export function SettingsDialog() {
                   disabled={importing}
                 >
                   <Upload className="mr-2 h-4 w-4" />
-                  {importing ? '导入中...' : '导入数据'}
+                  {importing ? t('settings.importing') : t('settings.importData')}
                 </Button>
               </div>
 
@@ -141,31 +141,31 @@ export function SettingsDialog() {
                   variant="outline"
                 >
                   <Save className="mr-2 h-4 w-4" />
-                  创建备份
+                  {t('settings.createBackup')}
                 </Button>
               )}
             </div>
           </div>
 
           <div className="space-y-2">
-            <h3 className="text-sm font-medium">统计信息</h3>
+            <h3 className="text-sm font-medium">{t('settings.statistics')}</h3>
             <div className="text-sm text-muted-foreground">
-              <p>Prompt 总数: {prompts.length}</p>
-              <p>分类数: {new Set(prompts.map(p => p.category).filter(Boolean)).size}</p>
+              <p>{t('settings.promptTotal')}: {prompts.length}</p>
+              <p>{t('settings.categoryTotal')}: {new Set(prompts.map(p => p.category).filter(Boolean)).size}</p>
             </div>
           </div>
 
           <div className="space-y-2">
-            <h3 className="text-sm font-medium">语言设置</h3>
+            <h3 className="text-sm font-medium">{t('settings.language')}</h3>
             <Select value={i18n.language} onValueChange={(lng) => i18n.changeLanguage(lng)}>
               <SelectTrigger className="w-full">
                 <Globe className="mr-2 h-4 w-4" />
-                <SelectValue placeholder="选择语言" />
+                <SelectValue placeholder={t('settings.language')} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="zh">中文</SelectItem>
-                <SelectItem value="en">English</SelectItem>
-                <SelectItem value="ja">日本語</SelectItem>
+                <SelectItem value="zh">{t('settings.languages.zh')}</SelectItem>
+                <SelectItem value="en">{t('settings.languages.en')}</SelectItem>
+                <SelectItem value="ja">{t('settings.languages.ja')}</SelectItem>
               </SelectContent>
             </Select>
           </div>
