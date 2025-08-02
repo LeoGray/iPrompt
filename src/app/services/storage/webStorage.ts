@@ -1,5 +1,5 @@
 import { IStorageService, StorageData, DEFAULT_STORAGE_DATA } from './types'
-import { Prompt } from '../../store/promptStore'
+import { Prompt, PromptVersion } from '../../store/promptStore'
 
 const DB_NAME = 'iPromptDB'
 const DB_VERSION = 1
@@ -60,11 +60,17 @@ export class WebStorage implements IStorageService {
           const data = request.result
           if (data) {
             // Parse dates back from ISO strings
-            data.prompts = data.prompts.map((prompt: Omit<Prompt, 'createdAt' | 'updatedAt'> & { createdAt: string; updatedAt: string }) => ({
+            type StoredPrompt = Omit<Prompt, 'createdAt' | 'updatedAt' | 'versions'> & {
+              createdAt: string
+              updatedAt: string
+              versions?: Array<Omit<PromptVersion, 'createdAt'> & { createdAt: string }>
+            }
+            
+            data.prompts = data.prompts.map((prompt: StoredPrompt) => ({
               ...prompt,
               createdAt: new Date(prompt.createdAt),
               updatedAt: new Date(prompt.updatedAt),
-              versions: prompt.versions?.map((v: Omit<Prompt['versions'][0], 'createdAt'> & { createdAt: string }) => ({
+              versions: prompt.versions?.map(v => ({
                 ...v,
                 createdAt: new Date(v.createdAt)
               })) || []

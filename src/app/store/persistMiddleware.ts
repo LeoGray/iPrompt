@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { StateCreator, StoreMutatorIdentifier } from 'zustand'
 import { storageManager, StorageData, DEFAULT_STORAGE_DATA } from '../services/storage'
 
@@ -19,17 +20,24 @@ type PersistImpl = <
   options: PersistOptions<T>
 ) => StateCreator<T, Mps, Mcs, T>
 
-export const customPersist: PersistImpl = (config, options) => (set, get, api) => {
+export const customPersist: PersistImpl = <
+  T,
+  Mps extends [StoreMutatorIdentifier, unknown][] = [],
+  Mcs extends [StoreMutatorIdentifier, unknown][] = []
+>(
+  config: StateCreator<T, Mps, Mcs, T>,
+  options: PersistOptions<T>
+) => (set: any, get: any, api: any) => {
   let isHydrated = false
   let lastSaveTime = Date.now()
   const SAVE_THROTTLE = 1000 // Save at most once per second
 
   // Default serializer
-  const serialize = options.serialize || ((state: T) => {
-    const stateWithPrompts = state as T & { prompts?: Array<{ category?: string }> }
+  const serialize = options.serialize || ((state: any) => {
+    const stateWithPrompts = state as any & { prompts?: Array<{ category?: string }> }
     const prompts = stateWithPrompts.prompts || []
     const categories = Array.from(new Set(
-      prompts.map((p) => p.category).filter(Boolean)
+      prompts.map((p: { category?: string }) => p.category).filter(Boolean)
     )) as string[]
     
     return {
@@ -44,7 +52,7 @@ export const customPersist: PersistImpl = (config, options) => (set, get, api) =
   const deserialize = options.deserialize || ((storage: StorageData) => {
     return {
       prompts: storage.prompts || []
-    } as Partial<T>
+    } as any
   })
 
   // Save function with throttling
@@ -75,10 +83,10 @@ export const customPersist: PersistImpl = (config, options) => (set, get, api) =
         set({
           ...state,
           isHydrated: true
-        } as T)
+        } as any)
       } else {
         // No data, but still mark as hydrated
-        set({ isHydrated: true } as T)
+        set({ isHydrated: true } as any)
       }
       
       isHydrated = true
@@ -86,20 +94,20 @@ export const customPersist: PersistImpl = (config, options) => (set, get, api) =
     } catch (error) {
       console.error('Failed to hydrate state:', error)
       // Even on error, mark as hydrated to show UI
-      set({ isHydrated: true } as T)
+      set({ isHydrated: true } as any)
       onRehydrateStorage?.(undefined, error as Error)
     }
   }
 
   // Create store
   const store = config(
-    ((partial: T | Partial<T> | ((state: T) => T | Partial<T>), replace?: boolean | undefined) => {
+    ((partial: any, replace?: any) => {
       set(partial, replace)
       // Auto-save on state change
       if (isHydrated) {
         saveState()
       }
-    }) as typeof set,
+    }) as any,
     get,
     api
   )
