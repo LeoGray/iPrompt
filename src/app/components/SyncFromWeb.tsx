@@ -6,7 +6,7 @@ import { useToast } from './ui/use-toast'
 import { storageManager } from '../services/storage'
 
 export function SyncFromWeb() {
-  const { } = useTranslation()
+  useTranslation()
   const { toast } = useToast()
   const [isSyncing, setIsSyncing] = useState(false)
   
