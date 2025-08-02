@@ -22,14 +22,23 @@ const TARGET_LANGUAGES = {
 // 源语言
 const SOURCE_LANGUAGE = 'zh-Hans' // 简体中文
 
+// 检测是否在 CI 环境中运行
+const isCI = process.env.CI === 'true' || process.env.GITHUB_ACTIONS === 'true'
+
 if (!TRANSLATOR_KEY) {
-  console.error('错误：未找到 AZURE_TRANSLATOR_KEY 环境变量')
-  console.error('请在 .env 文件中设置 AZURE_TRANSLATOR_KEY')
-  console.error('获取免费 API Key：')
-  console.error('1. 访问 https://azure.microsoft.com/free/')
-  console.error('2. 创建免费账户（不需要信用卡）')
-  console.error('3. 创建 Translator 资源（每月200万字符免费）')
-  process.exit(1)
+  if (isCI) {
+    console.log('提示：未配置 Azure Translator API，跳过自动翻译')
+    console.log('如需启用翻译，请参考 .github/TRANSLATION_SECRETS.md 配置 GitHub Secrets')
+    process.exit(0) // 在 CI 中正常退出，不影响构建
+  } else {
+    console.error('错误：未找到 AZURE_TRANSLATOR_KEY 环境变量')
+    console.error('请在 .env 文件中设置 AZURE_TRANSLATOR_KEY')
+    console.error('获取免费 API Key：')
+    console.error('1. 访问 https://azure.microsoft.com/free/')
+    console.error('2. 创建免费账户（不需要信用卡）')
+    console.error('3. 创建 Translator 资源（每月200万字符免费）')
+    process.exit(1)
+  }
 }
 
 /**

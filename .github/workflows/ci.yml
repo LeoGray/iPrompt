@@ -22,7 +22,10 @@ jobs:
           cache: 'npm'
       
       - name: Install dependencies
-        run: npm install
+        run: |
+          npm install
+          # Force install platform-specific rollup binary
+          npm install @rollup/rollup-linux-x64-gnu
       
       - name: Run ESLint
         run: npm run lint
@@ -46,7 +49,10 @@ jobs:
           cache: 'npm'
       
       - name: Install dependencies
-        run: npm install
+        run: |
+          npm install
+          # Force install platform-specific rollup binary
+          npm install @rollup/rollup-linux-x64-gnu
       
       - name: Test Web build
         run: npm run build:web

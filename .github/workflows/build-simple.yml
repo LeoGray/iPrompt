@@ -20,11 +20,14 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
+          cache: 'npm'
       
       - name: Install dependencies
         run: |
           npm cache clean --force
           npm install
+          # Force install platform-specific rollup binary
+          npm install @rollup/rollup-linux-x64-gnu
       
       - name: Build Web
         run: npm run build:web
@@ -63,11 +66,17 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
+          cache: 'npm'
       
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
         with:
           targets: ${{ matrix.platform.target }}
+      
+      - name: Rust cache
+        uses: swatinem/rust-cache@v2
+        with:
+          workspaces: './src-tauri -> target'
       
       - name: Install Linux dependencies
         if: matrix.platform.os == 'ubuntu-latest'
@@ -80,6 +89,15 @@ jobs:
         run: |
           npm cache clean --force
           npm install
+          # Force install platform-specific rollup binary for each OS
+          if [ "${{ matrix.platform.os }}" == "ubuntu-latest" ]; then
+            npm install @rollup/rollup-linux-x64-gnu
+          elif [ "${{ matrix.platform.os }}" == "macos-latest" ]; then
+            npm install @rollup/rollup-darwin-arm64
+          elif [ "${{ matrix.platform.os }}" == "windows-latest" ]; then
+            npm install @rollup/rollup-win32-x64-msvc
+          fi
+        shell: bash
       
       - name: Build Tauri
         run: npx tauri build --target ${{ matrix.platform.target }}
