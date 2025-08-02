@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { usePromptStore } from '../store/promptStore'
 import { Button } from './ui/button'
 import { Input } from './ui/input'
@@ -85,25 +85,7 @@ export function FullScreenEditor({ promptId, isOpen, onClose, mode }: FullScreen
     }
   }, [prompt, mode])
   
-  // 键盘快捷键
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && !showVersions) {
-        onClose()
-      }
-      if ((e.metaKey || e.ctrlKey) && e.key === 's') {
-        e.preventDefault()
-        handleSave()
-      }
-    }
-    
-    if (isOpen) {
-      document.addEventListener('keydown', handleKeyDown)
-      return () => document.removeEventListener('keydown', handleKeyDown)
-    }
-  }, [isOpen, showVersions])
-  
-  const handleSave = () => {
+  const handleSave = useCallback(() => {
     if (!title.trim() || !content.trim()) {
       toast({
         title: t('messages.error'),
@@ -135,7 +117,25 @@ export function FullScreenEditor({ promptId, isOpen, onClose, mode }: FullScreen
     }
     
     onClose()
-  }
+  }, [title, content, category, tags, mode, promptId, updatePrompt, addPrompt, toast, t, onClose])
+  
+  // 键盘快捷键
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && !showVersions) {
+        onClose()
+      }
+      if ((e.metaKey || e.ctrlKey) && e.key === 's') {
+        e.preventDefault()
+        handleSave()
+      }
+    }
+    
+    if (isOpen) {
+      document.addEventListener('keydown', handleKeyDown)
+      return () => document.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [isOpen, showVersions, onClose, handleSave])
   
   const handleRestoreVersion = (versionContent: string) => {
     setContent(versionContent)

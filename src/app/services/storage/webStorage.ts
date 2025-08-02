@@ -1,4 +1,5 @@
 import { IStorageService, StorageData, DEFAULT_STORAGE_DATA } from './types'
+import { Prompt } from '../../store/promptStore'
 
 const DB_NAME = 'iPromptDB'
 const DB_VERSION = 1
@@ -59,11 +60,11 @@ export class WebStorage implements IStorageService {
           const data = request.result
           if (data) {
             // Parse dates back from ISO strings
-            data.prompts = data.prompts.map((prompt: any) => ({
+            data.prompts = data.prompts.map((prompt: Omit<Prompt, 'createdAt' | 'updatedAt'> & { createdAt: string; updatedAt: string }) => ({
               ...prompt,
               createdAt: new Date(prompt.createdAt),
               updatedAt: new Date(prompt.updatedAt),
-              versions: prompt.versions?.map((v: any) => ({
+              versions: prompt.versions?.map((v: Omit<Prompt['versions'][0], 'createdAt'> & { createdAt: string }) => ({
                 ...v,
                 createdAt: new Date(v.createdAt)
               })) || []
@@ -189,17 +190,24 @@ export class WebStorage implements IStorageService {
   }
 
   // Helper method to migrate from old localStorage format
-  private migrateFromLocalStorage(oldData: any): StorageData {
+  private migrateFromLocalStorage(oldData: Record<string, unknown>): StorageData {
     // Handle old zustand persist format
-    if (oldData.state && oldData.state.prompts) {
-      oldData = oldData.state
-    }
+    const data = (oldData.state && typeof oldData.state === 'object' && 'prompts' in oldData.state) 
+      ? oldData.state as Record<string, unknown>
+      : oldData
+
+    const prompts = Array.isArray(data.prompts) ? data.prompts : []
 
     return {
       version: DEFAULT_STORAGE_DATA.version,
-      prompts: oldData.prompts || [],
+      prompts: prompts as Prompt[],
       categories: Array.from(new Set(
-        oldData.prompts?.map((p: any) => p.category).filter(Boolean) || []
+        prompts.map((p: unknown) => {
+          if (typeof p === 'object' && p !== null && 'category' in p && typeof p.category === 'string') {
+            return p.category
+          }
+          return null
+        }).filter(Boolean) as string[]
       )),
       lastModified: new Date().toISOString()
     }

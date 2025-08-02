@@ -20,7 +20,7 @@ export function PlatformInfo() {
       setPlatform(p)
     })
     platformAPI.getVersion().then(setVersion)
-  }, [])
+  }, [environment])
 
   return (
     <div className="text-xs text-muted-foreground">

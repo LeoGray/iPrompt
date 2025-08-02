@@ -1,0 +1,30 @@
+{
+  "name": "iPrompt",
+  "description": "A cross-platform prompt management system",
+  "repository": "https://github.com/LeoGray/iPrompt",
+  "logo": "https://raw.githubusercontent.com/LeoGray/iPrompt/main/public/icon.svg",
+  "keywords": ["prompt", "management", "react", "vite"],
+  "buildpacks": [
+    {
+      "url": "heroku/nodejs"
+    },
+    {
+      "url": "https://github.com/heroku/heroku-buildpack-static"
+    }
+  ],
+  "env": {
+    "NODE_ENV": {
+      "description": "Environment mode",
+      "value": "production"
+    }
+  },
+  "formation": {
+    "web": {
+      "quantity": 1,
+      "size": "free"
+    }
+  },
+  "scripts": {
+    "postdeploy": "npm run build:web"
+  }
+}

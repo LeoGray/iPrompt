@@ -3,6 +3,15 @@
 [![CI](https://github.com/LeoGray/iprompt/actions/workflows/ci.yml/badge.svg)](https://github.com/LeoGray/iprompt/actions/workflows/ci.yml)
 [![Build and Release](https://github.com/LeoGray/iprompt/actions/workflows/build.yml/badge.svg)](https://github.com/LeoGray/iprompt/actions/workflows/build.yml)
 
+## 🚀 一键部署
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FLeoGray%2FiPrompt&project-name=iprompt&repository-name=iprompt&demo-title=iPrompt&demo-description=A%20cross-platform%20prompt%20management%20system&demo-url=https%3A%2F%2Fiprompt.vercel.app)
+[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/LeoGray/iPrompt)
+[![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/template/deploy?template=https%3A%2F%2Fgithub.com%2FLeoGray%2FiPrompt&envs=NODE_ENV&NODE_ENVDesc=Production%20environment&NODE_ENVDefault=production)
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/LeoGray/iPrompt)
+[![Deploy to DigitalOcean](https://www.deploytodo.com/do-btn-blue.svg)](https://cloud.digitalocean.com/apps/new?repo=https://github.com/LeoGray/iPrompt/tree/main)
+[![Run on Replit](https://replit.com/badge/github/LeoGray/iPrompt)](https://replit.com/new/github/LeoGray/iPrompt)
+
 一个支持 Tauri 桌面端和 Web 端的跨平台 Prompt 管理系统，使用 Docker 进行开发和部署。
 
 ## 特性
@@ -24,6 +33,19 @@
 - **开发环境**: Docker + Docker Compose
 
 ## 快速开始
+
+### 在线部署
+
+支持多个平台的一键部署：
+
+- **Vercel** - 推荐用于静态网站托管，全球 CDN，自动 HTTPS
+- **Netlify** - 另一个优秀的静态网站托管平台
+- **Railway** - 支持 Docker 部署，适合需要后端服务的场景
+- **Render** - 免费套餐支持静态网站和 Docker 部署
+- **DigitalOcean App Platform** - 专业的云平台，支持完整的应用部署
+- **Replit** - 在线 IDE，可以直接编辑和运行代码
+
+点击上方对应的部署按钮即可开始。
 
 ### 使用 Docker 开发（推荐）
 

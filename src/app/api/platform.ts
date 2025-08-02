@@ -3,8 +3,8 @@ export interface IPlatformAPI {
   getPlatform(): Promise<string>
   getVersion(): Promise<string>
   storage: {
-    get: (key: string) => Promise<any>
-    set: (key: string, value: any) => Promise<void>
+    get: (key: string) => Promise<unknown>
+    set: (key: string, value: unknown) => Promise<void>
     delete: (key: string) => Promise<void>
     clear: () => Promise<void>
   }
@@ -59,11 +59,11 @@ class DynamicPlatformAPI implements IPlatformAPI {
   }
 
   storage = {
-    get: async (key: string): Promise<any> => {
+    get: async (key: string): Promise<unknown> => {
       const value = localStorage.getItem(key)
       return value ? JSON.parse(value) : null
     },
-    set: async (key: string, value: any): Promise<void> => {
+    set: async (key: string, value: unknown): Promise<void> => {
       localStorage.setItem(key, JSON.stringify(value))
     },
     delete: async (key: string): Promise<void> => {

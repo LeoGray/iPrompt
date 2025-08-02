@@ -5,7 +5,7 @@ export interface StorageData {
   version: string        // 数据版本，用于未来迁移
   prompts: Prompt[]      // Prompt 数据
   categories: string[]   // 分类列表
-  settings?: any         // 预留设置项
+  settings?: Record<string, unknown>  // 预留设置项
   lastModified: string   // 最后修改时间 ISO string
 }
 
