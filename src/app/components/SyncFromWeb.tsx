@@ -4,10 +4,9 @@ import { useTranslation } from 'react-i18next'
 import { Button } from './ui/button'
 import { useToast } from './ui/use-toast'
 import { storageManager } from '../services/storage'
-import { usePromptStore } from '../store/promptStore'
 
 export function SyncFromWeb() {
-  const { t } = useTranslation()
+  const { } = useTranslation()
   const { toast } = useToast()
   const [isSyncing, setIsSyncing] = useState(false)
   
@@ -43,7 +42,7 @@ export function SyncFromWeb() {
       const mergedPrompts = [...(currentData?.prompts || [])]
       
       // 添加或更新 Web 数据中的 prompts
-      dataToSync.prompts?.forEach((webPrompt: any) => {
+      dataToSync.prompts?.forEach((webPrompt: { id: string; versions?: unknown[] }) => {
         const existingIndex = mergedPrompts.findIndex(p => p.id === webPrompt.id)
         if (existingIndex >= 0) {
           // 更新现有 prompt，保留版本历史

@@ -46,7 +46,7 @@ class StorageManager {
       // Ensure proper data structure with versions
       const migratedData: StorageData = {
         version: '1.0.0',
-        prompts: Array.isArray(dataToMigrate.prompts) ? dataToMigrate.prompts.map((p: any) => ({
+        prompts: Array.isArray(dataToMigrate.prompts) ? dataToMigrate.prompts.map((p: Record<string, unknown>) => ({
           ...p,
           versions: p.versions || [] // 确保 versions 数组存在
         })) : [],
@@ -54,7 +54,7 @@ class StorageManager {
         lastModified: new Date().toISOString()
       }
       
-      console.log('Migrating prompts with versions:', migratedData.prompts.map((p: any) => ({
+      console.log('Migrating prompts with versions:', migratedData.prompts.map((p: { id: string; title: string; versions?: unknown[] }) => ({
         id: p.id,
         title: p.title,
         versionsCount: p.versions?.length || 0

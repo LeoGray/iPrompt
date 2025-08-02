@@ -2,8 +2,8 @@ import { IStorageService, StorageData, StorageUsageInfo } from './types'
 
 // Dynamic imports for Tauri APIs
 let tauriInvoke: ((cmd: string, args?: Record<string, unknown>) => Promise<unknown>) | null = null
-let tauriDialog: any = null
-let tauriFs: any = null
+let tauriDialog: unknown = null
+let tauriFs: { writeTextFile: (path: string, content: string) => Promise<void>; readTextFile: (path: string) => Promise<string> } | null = null
 
 // Initialize Tauri APIs
 async function initTauriAPIs() {

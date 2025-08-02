@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { History, Clock, RotateCcw, X, Eye, FileText } from 'lucide-react'
+import { History, Clock, RotateCcw, Eye } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'

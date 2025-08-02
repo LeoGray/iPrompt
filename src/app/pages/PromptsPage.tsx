@@ -66,7 +66,7 @@ export function PromptsPage() {
     setHistoryDialogOpen(true)
   }
   
-  const handleRestoreVersion = (version: any) => {
+  const handleRestoreVersion = (version: { content: string }) => {
     if (historyPromptId) {
       updatePrompt(historyPromptId, { content: version.content })
       toast({
