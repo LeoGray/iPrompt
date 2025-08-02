@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { Button } from './ui/button'
 import { useToast } from './ui/use-toast'
 import { storageManager } from '../services/storage'
+import { PromptVersion } from '../store/promptStore'
 
 export function SyncFromWeb() {
   useTranslation()
@@ -48,13 +49,13 @@ export function SyncFromWeb() {
           // 更新现有 prompt，保留版本历史
           mergedPrompts[existingIndex] = {
             ...webPrompt,
-            versions: webPrompt.versions || []
+            versions: (webPrompt.versions || []) as PromptVersion[]
           }
         } else {
           // 添加新 prompt
           mergedPrompts.push({
             ...webPrompt,
-            versions: webPrompt.versions || []
+            versions: (webPrompt.versions || []) as PromptVersion[]
           })
         }
       })

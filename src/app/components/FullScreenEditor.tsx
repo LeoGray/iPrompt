@@ -632,7 +632,7 @@ export function FullScreenEditor({ promptId, isOpen, onClose, mode }: FullScreen
                   onClick={() => {
                     setSelectedVersionForPreview({
                       content: prompt.content,
-                      title: t('editor.currentVersion') + ` (v${prompt.versions.length + 1})`
+                      title: t('editor.currentVersion') + ` (v${(prompt.versions?.length || 0) + 1})`
                     })
                   }}
                 >

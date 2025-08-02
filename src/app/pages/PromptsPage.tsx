@@ -207,7 +207,7 @@ export function PromptsPage() {
       />
       
       <VersionHistoryDialog
-        prompt={historyPromptId ? getPromptById(historyPromptId) : null}
+        prompt={historyPromptId ? getPromptById(historyPromptId) ?? null : null}
         isOpen={historyDialogOpen}
         onClose={() => {
           setHistoryDialogOpen(false)
