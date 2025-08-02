@@ -43,19 +43,29 @@ export function SyncFromWeb() {
       const mergedPrompts = [...(currentData?.prompts || [])]
       
       // 添加或更新 Web 数据中的 prompts
-      dataToSync.prompts?.forEach((webPrompt: { id: string; versions?: unknown[] }) => {
-        const existingIndex = mergedPrompts.findIndex(p => p.id === webPrompt.id)
+      dataToSync.prompts?.forEach((webPrompt: unknown) => {
+        const prompt = webPrompt as { 
+          id: string; 
+          title: string; 
+          content: string; 
+          category?: string; 
+          tags?: string[]; 
+          createdAt: Date; 
+          updatedAt: Date; 
+          versions?: unknown[] 
+        }
+        const existingIndex = mergedPrompts.findIndex(p => p.id === prompt.id)
         if (existingIndex >= 0) {
           // 更新现有 prompt，保留版本历史
           mergedPrompts[existingIndex] = {
-            ...webPrompt,
-            versions: (webPrompt.versions || []) as PromptVersion[]
+            ...prompt,
+            versions: (prompt.versions || []) as PromptVersion[]
           }
         } else {
           // 添加新 prompt
           mergedPrompts.push({
-            ...webPrompt,
-            versions: (webPrompt.versions || []) as PromptVersion[]
+            ...prompt,
+            versions: (prompt.versions || []) as PromptVersion[]
           })
         }
       })
