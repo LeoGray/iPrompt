@@ -9,8 +9,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-web:
-    name: Build Web
+  lint-and-typecheck:
+    name: Lint & Type Check
     runs-on: ubuntu-latest
     
     steps:
@@ -25,9 +25,34 @@ jobs:
       - name: Install dependencies
         run: |
           npm cache clean --force
-          npm install
+          npm install --force
+      
+      - name: Run TypeScript type check
+        run: npm run typecheck
+      
+      - name: Run ESLint
+        run: npm run lint
+  
+  build-web:
+    name: Build Web
+    needs: lint-and-typecheck
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: |
+          npm cache clean --force
+          npm install --force
           # Force install platform-specific rollup binary
-          npm install @rollup/rollup-linux-x64-gnu
+          npm install @rollup/rollup-linux-x64-gnu --force
       
       - name: Build Web
         run: npm run build:web
@@ -40,6 +65,7 @@ jobs:
 
   build-tauri:
     name: Build Tauri (${{ matrix.platform.name }})
+    needs: lint-and-typecheck
     strategy:
       fail-fast: false
       matrix:
@@ -88,16 +114,16 @@ jobs:
       - name: Install npm dependencies
         run: |
           npm cache clean --force
-          npm install
+          npm install --force
           # Force install platform-specific rollup binary for each target
           if [ "${{ matrix.platform.target }}" == "x86_64-unknown-linux-gnu" ]; then
-            npm install @rollup/rollup-linux-x64-gnu
+            npm install @rollup/rollup-linux-x64-gnu --force
           elif [ "${{ matrix.platform.target }}" == "x86_64-apple-darwin" ]; then
-            npm install @rollup/rollup-darwin-x64
+            npm install @rollup/rollup-darwin-x64 --force
           elif [ "${{ matrix.platform.target }}" == "aarch64-apple-darwin" ]; then
-            npm install @rollup/rollup-darwin-arm64
+            npm install @rollup/rollup-darwin-arm64 --force
           elif [ "${{ matrix.platform.target }}" == "x86_64-pc-windows-msvc" ]; then
-            npm install @rollup/rollup-win32-x64-msvc
+            npm install @rollup/rollup-win32-x64-msvc --force
           fi
         shell: bash
       
