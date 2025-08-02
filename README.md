@@ -1,5 +1,7 @@
 # iPrompt - Cross-Platform Prompt Management System
 
+[简体中文](docs/zh/README.md) | English
+
 [![CI](https://github.com/LeoGray/iprompt/actions/workflows/ci.yml/badge.svg)](https://github.com/LeoGray/iprompt/actions/workflows/ci.yml)
 [![Build and Release](https://github.com/LeoGray/iprompt/actions/workflows/build.yml/badge.svg)](https://github.com/LeoGray/iprompt/actions/workflows/build.yml)
 

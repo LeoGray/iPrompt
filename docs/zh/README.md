@@ -1,5 +1,7 @@
 # iPrompt - 跨平台 Prompt 管理系统
 
+简体中文 | [English](../../README.md)
+
 [![CI](https://github.com/LeoGray/iprompt/actions/workflows/ci.yml/badge.svg)](https://github.com/LeoGray/iprompt/actions/workflows/ci.yml)
 [![Build and Release](https://github.com/LeoGray/iprompt/actions/workflows/build.yml/badge.svg)](https://github.com/LeoGray/iprompt/actions/workflows/build.yml)
 
