@@ -20,8 +20,8 @@ export interface BackupInfo {
 // 存储使用情况
 export interface StorageUsageInfo {
   used: number      // 已使用字节数
-  limit: number     // 限制字节数（预设值）
-  percentage: number // 使用百分比
+  limit?: number    // 限制字节数（可选，客户端可能没有限制）
+  percentage?: number // 使用百分比（可选，没有限制时不计算）
 }
 
 // 存储服务接口

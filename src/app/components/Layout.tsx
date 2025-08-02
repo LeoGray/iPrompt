@@ -2,7 +2,7 @@ import { ReactNode, useMemo } from 'react'
 import { usePromptStore } from '../store/promptStore'
 import { Hash, Folder } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
-import { PlatformInfo } from './PlatformInfo'
+import { LanguageSwitcher } from './LanguageSwitcher'
 import { SettingsDialog } from './SettingsDialog'
 
 interface LayoutProps {
@@ -107,7 +107,7 @@ export function Layout({ children }: LayoutProps) {
         
         <div className="p-3 border-t space-y-2">
           <div className="flex items-center justify-between">
-            <PlatformInfo />
+            <LanguageSwitcher />
             <SettingsDialog />
           </div>
         </div>

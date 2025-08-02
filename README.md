@@ -153,3 +153,13 @@ docker-compose -f docker-compose.prod.yml up -d
 ## License
 
 AGPLv3
+
+## Star History
+
+<a href="https://www.star-history.com/#LeoGray/iPrompt&Date">
+ <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=LeoGray/iPrompt&type=Date&theme=dark" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=LeoGray/iPrompt&type=Date" />
+   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=LeoGray/iPrompt&type=Date" />
+ </picture>
+</a>

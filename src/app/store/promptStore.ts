@@ -71,13 +71,15 @@ export const usePromptStore = create<PromptStore>()(
               
               // Add version if content changed
               if (oldContent !== promptData.content && promptData.content) {
+                const newVersion = {
+                  id: crypto.randomUUID(),
+                  content: oldContent,
+                  createdAt: prompt.updatedAt
+                }
+                
                 updatedPrompt.versions = [
                   ...(prompt.versions || []),
-                  {
-                    id: crypto.randomUUID(),
-                    content: oldContent,
-                    createdAt: prompt.updatedAt
-                  }
+                  newVersion
                 ]
               }
               

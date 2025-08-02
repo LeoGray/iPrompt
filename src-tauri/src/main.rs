@@ -84,6 +84,21 @@ fn create_backup() -> Result<String, String> {
     Ok(backup_path.to_string_lossy().to_string())
 }
 
+// Get data file size
+#[tauri::command]
+fn get_data_file_size() -> Result<u64, String> {
+    let file_path = get_data_file_path()?;
+    
+    if !file_path.exists() {
+        return Ok(0);
+    }
+    
+    let metadata = fs::metadata(&file_path)
+        .map_err(|e| format!("Failed to get file metadata: {}", e))?;
+    
+    Ok(metadata.len())
+}
+
 // List backups
 #[tauri::command]
 fn list_backups() -> Result<Vec<String>, String> {
@@ -123,7 +138,8 @@ fn main() {
             read_data_file,
             write_data_file,
             create_backup,
-            list_backups
+            list_backups,
+            get_data_file_size
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

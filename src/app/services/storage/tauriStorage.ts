@@ -1,6 +1,39 @@
 import { IStorageService, StorageData, StorageUsageInfo } from './types'
 
-const STORAGE_LIMIT = 5 * 1024 * 1024 // 5MB 限制
+// Dynamic imports for Tauri APIs
+let tauriInvoke: ((cmd: string, args?: Record<string, unknown>) => Promise<unknown>) | null = null
+let tauriDialog: any = null
+let tauriFs: any = null
+
+// Initialize Tauri APIs
+async function initTauriAPIs() {
+  if (!tauriInvoke) {
+    try {
+      const { invoke } = await import('@tauri-apps/api/core')
+      tauriInvoke = invoke
+    } catch (e) {
+      console.error('Failed to import Tauri core API:', e)
+    }
+  }
+  
+  if (!tauriDialog) {
+    try {
+      const dialog = await import('@tauri-apps/plugin-dialog')
+      tauriDialog = dialog
+    } catch (e) {
+      console.error('Failed to import Tauri dialog API:', e)
+    }
+  }
+  
+  if (!tauriFs) {
+    try {
+      const fs = await import('@tauri-apps/plugin-fs')
+      tauriFs = fs
+    } catch (e) {
+      console.error('Failed to import Tauri fs API:', e)
+    }
+  }
+}
 
 // Tauri storage implementation using file system
 export class TauriStorage implements IStorageService {
@@ -8,28 +41,19 @@ export class TauriStorage implements IStorageService {
 
   async load(): Promise<StorageData | null> {
     try {
-      // Use window.__TAURI__ directly instead of import
-      if (!window.__TAURI__) {
+      await initTauriAPIs()
+      
+      if (!tauriInvoke) {
         throw new Error('Tauri API not available')
       }
       
-      const dataString = await window.__TAURI__.invoke('read_data_file') as string
+      const dataString = await tauriInvoke('read_data_file') as string
       if (!dataString) {
         return null
       }
 
       const data = JSON.parse(dataString) as StorageData
       
-      // Convert date strings back to Date objects
-      data.prompts = data.prompts.map(prompt => ({
-        ...prompt,
-        createdAt: new Date(prompt.createdAt),
-        updatedAt: new Date(prompt.updatedAt),
-        versions: prompt.versions?.map(v => ({
-          ...v,
-          createdAt: new Date(v.createdAt)
-        })) || []
-      }))
 
       return data
     } catch (error) {
@@ -40,14 +64,17 @@ export class TauriStorage implements IStorageService {
 
   async save(data: StorageData): Promise<void> {
     try {
-      if (!window.__TAURI__) {
+      await initTauriAPIs()
+      
+      if (!tauriInvoke) {
         throw new Error('Tauri API not available')
       }
       
       // Update last modified time
       data.lastModified = new Date().toISOString()
 
-      // Convert dates to ISO strings for storage
+      
+      // 确保日期都是字符串格式
       const storageData = {
         ...data,
         prompts: data.prompts.map(prompt => ({
@@ -62,7 +89,7 @@ export class TauriStorage implements IStorageService {
       }
 
       const jsonString = JSON.stringify(storageData, null, 2)
-      await window.__TAURI__.invoke('write_data_file', { data: jsonString })
+      await tauriInvoke('write_data_file', { data: jsonString })
     } catch (error) {
       console.error('Failed to save data to file:', error)
       throw error
@@ -71,7 +98,9 @@ export class TauriStorage implements IStorageService {
 
   async exportData(): Promise<Blob> {
     try {
-      if (!window.__TAURI__) {
+      await initTauriAPIs()
+      
+      if (!tauriDialog || !tauriFs) {
         throw new Error('Tauri API not available')
       }
       
@@ -83,7 +112,7 @@ export class TauriStorage implements IStorageService {
       const jsonString = JSON.stringify(data, null, 2)
       
       // Show save dialog
-      const filePath = await window.__TAURI__.dialog.save({
+      const filePath = await tauriDialog.save({
         defaultPath: `iprompt-export-${new Date().toISOString().split('T')[0]}.json`,
         filters: [{
           name: 'JSON',
@@ -92,7 +121,7 @@ export class TauriStorage implements IStorageService {
       })
 
       if (filePath) {
-        await window.__TAURI__.fs.writeTextFile(filePath, jsonString)
+        await tauriFs.writeTextFile(filePath, jsonString)
       }
 
       return new Blob([jsonString], { type: 'application/json' })
@@ -104,12 +133,14 @@ export class TauriStorage implements IStorageService {
 
   async importData(_file: File): Promise<StorageData> {
     try {
-      if (!window.__TAURI__) {
+      await initTauriAPIs()
+      
+      if (!tauriDialog || !tauriFs) {
         throw new Error('Tauri API not available')
       }
 
       // Show open dialog
-      const selected = await window.__TAURI__.dialog.open({
+      const selected = await tauriDialog.open({
         multiple: false,
         filters: [{
           name: 'JSON',
@@ -121,7 +152,7 @@ export class TauriStorage implements IStorageService {
         throw new Error('No file selected')
       }
 
-      const content = await window.__TAURI__.fs.readTextFile(selected)
+      const content = await tauriFs.readTextFile(selected)
       const data = JSON.parse(content) as StorageData
 
       // Validate data structure
@@ -151,11 +182,13 @@ export class TauriStorage implements IStorageService {
 
   async createBackup(): Promise<void> {
     try {
-      if (!window.__TAURI__) {
+      await initTauriAPIs()
+      
+      if (!tauriInvoke) {
         throw new Error('Tauri API not available')
       }
       
-      await window.__TAURI__.invoke('create_backup')
+      await tauriInvoke('create_backup')
     } catch (error) {
       console.error('Failed to create backup:', error)
       throw error
@@ -164,25 +197,24 @@ export class TauriStorage implements IStorageService {
 
   async getStorageUsage(): Promise<StorageUsageInfo> {
     try {
-      const data = await this.load()
+      await initTauriAPIs()
       
-      // 计算数据大小
-      const dataSize = data 
-        ? new Blob([JSON.stringify(data)]).size 
-        : 0
+      if (!tauriInvoke) {
+        throw new Error('Tauri API not available')
+      }
       
-      // 返回使用情况
+      // 获取实际文件大小
+      const fileSize = await tauriInvoke('get_data_file_size') as number
+      
+      // 客户端不显示限制和百分比
       return {
-        used: dataSize,
-        limit: STORAGE_LIMIT,
-        percentage: Math.round((dataSize / STORAGE_LIMIT) * 100)
+        used: fileSize
+        // 不设置 limit 和 percentage
       }
     } catch (error) {
       console.error('Error calculating storage usage:', error)
       return {
-        used: 0,
-        limit: STORAGE_LIMIT,
-        percentage: 0
+        used: 0
       }
     }
   }

@@ -38,8 +38,30 @@ class StorageManager {
       console.log('Migrating data from localStorage to file system...')
       const parsedData = JSON.parse(localStorageData)
       
+      // Handle old zustand persist format
+      const dataToMigrate = (parsedData.state && typeof parsedData.state === 'object' && 'prompts' in parsedData.state) 
+        ? parsedData.state
+        : parsedData
+      
+      // Ensure proper data structure with versions
+      const migratedData: StorageData = {
+        version: '1.0.0',
+        prompts: Array.isArray(dataToMigrate.prompts) ? dataToMigrate.prompts.map((p: any) => ({
+          ...p,
+          versions: p.versions || [] // 确保 versions 数组存在
+        })) : [],
+        categories: Array.isArray(dataToMigrate.categories) ? dataToMigrate.categories : [],
+        lastModified: new Date().toISOString()
+      }
+      
+      console.log('Migrating prompts with versions:', migratedData.prompts.map((p: any) => ({
+        id: p.id,
+        title: p.title,
+        versionsCount: p.versions?.length || 0
+      })))
+      
       // Save to file system
-      await this.storage.save(parsedData)
+      await this.storage.save(migratedData)
       
       // Remove from localStorage after successful migration
       localStorage.removeItem('prompt-storage')

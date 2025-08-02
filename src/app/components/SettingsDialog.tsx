@@ -1,22 +1,14 @@
 import { useState, useEffect } from 'react'
-import { Settings, Download, Upload, Save, Globe, HardDrive } from 'lucide-react'
+import { Settings, Download, Upload, Save, HardDrive } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from './ui/dialog'
 import { Button } from './ui/button'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from './ui/select'
 import { Progress } from './ui/progress'
 import { storageManager } from '../services/storage'
 import { usePromptStore } from '../store/promptStore'
@@ -24,6 +16,8 @@ import { useToast } from './ui/use-toast'
 import { formatBytes } from '../utils/formatters'
 import type { StorageUsageInfo } from '../services/storage/types'
 import { cn } from '@/lib/utils'
+import { PlatformInfo } from './PlatformInfo'
+import { SyncFromWeb } from './SyncFromWeb'
 
 export function SettingsDialog() {
   const [open, setOpen] = useState(false)
@@ -123,9 +117,6 @@ export function SettingsDialog() {
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>{t('settings.title')}</DialogTitle>
-          <DialogDescription>
-            {t('settings.description')}
-          </DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-4">
           <div className="space-y-2">
@@ -159,14 +150,17 @@ export function SettingsDialog() {
               </div>
 
               {window.__TAURI__ && (
-                <Button
-                  onClick={handleBackup}
-                  className="w-full justify-start"
-                  variant="outline"
-                >
-                  <Save className="mr-2 h-4 w-4" />
-                  {t('settings.createBackup')}
-                </Button>
+                <>
+                  <Button
+                    onClick={handleBackup}
+                    className="w-full justify-start"
+                    variant="outline"
+                  >
+                    <Save className="mr-2 h-4 w-4" />
+                    {t('settings.createBackup')}
+                  </Button>
+                  <SyncFromWeb />
+                </>
               )}
             </div>
           </div>
@@ -188,38 +182,39 @@ export function SettingsDialog() {
               <p className="text-sm text-muted-foreground">{t('settings.storageCalculating')}</p>
             ) : storageInfo ? (
               <div className="space-y-2">
-                <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground">
-                    {t('settings.storageInfo', {
-                      used: formatBytes(storageInfo.used, i18n.language),
-                      total: formatBytes(storageInfo.limit, i18n.language)
+                {storageInfo.limit ? (
+                  // Web 端显示限制和进度条
+                  <>
+                    <div className="flex justify-between text-sm">
+                      <span className="text-muted-foreground">
+                        {t('settings.storageInfo', {
+                          used: formatBytes(storageInfo.used, i18n.language),
+                          total: formatBytes(storageInfo.limit, i18n.language)
+                        })}
+                      </span>
+                      <span className={cn(
+                        "font-medium",
+                        storageInfo.percentage && storageInfo.percentage > 80 ? "text-destructive" : "text-muted-foreground"
+                      )}>
+                        {t('settings.storagePercentage', { percentage: storageInfo.percentage })}
+                      </span>
+                    </div>
+                    <Progress value={storageInfo.percentage || 0} className="h-2" />
+                  </>
+                ) : (
+                  // 客户端只显示使用量
+                  <div className="text-sm text-muted-foreground">
+                    {t('settings.storageUsed', {
+                      used: formatBytes(storageInfo.used, i18n.language)
                     })}
-                  </span>
-                  <span className={cn(
-                    "font-medium",
-                    storageInfo.percentage > 80 ? "text-destructive" : "text-muted-foreground"
-                  )}>
-                    {t('settings.storagePercentage', { percentage: storageInfo.percentage })}
-                  </span>
-                </div>
-                <Progress value={storageInfo.percentage} className="h-2" />
+                  </div>
+                )}
               </div>
             ) : null}
           </div>
-
-          <div className="space-y-2">
-            <h3 className="text-sm font-medium">{t('settings.language')}</h3>
-            <Select value={i18n.language} onValueChange={(lng) => i18n.changeLanguage(lng)}>
-              <SelectTrigger className="w-full">
-                <Globe className="mr-2 h-4 w-4" />
-                <SelectValue placeholder={t('settings.language')} />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="zh">{t('settings.languages.zh')}</SelectItem>
-                <SelectItem value="en">{t('settings.languages.en')}</SelectItem>
-                <SelectItem value="ja">{t('settings.languages.ja')}</SelectItem>
-              </SelectContent>
-            </Select>
+          
+          <div className="border-t pt-4 mt-2">
+            <PlatformInfo />
           </div>
         </div>
       </DialogContent>

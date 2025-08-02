@@ -3,6 +3,8 @@ import { Plus, Search, Edit2, Trash2, Copy, Clock, History } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { usePromptStore } from '../store/promptStore'
 import { FullScreenEditor } from '../components/FullScreenEditor'
+import { VersionHistoryDialog } from '../components/VersionHistoryDialog'
+import { VersionPreviewTooltip } from '../components/VersionPreviewTooltip'
 import { Button } from '../components/ui/button'
 import { Input } from '../components/ui/input'
 import { useToast } from '../components/ui/use-toast'
@@ -11,6 +13,8 @@ export function PromptsPage() {
   const [editorOpen, setEditorOpen] = useState(false)
   const [editorMode, setEditorMode] = useState<'create' | 'edit'>('create')
   const [editingPromptId, setEditingPromptId] = useState<string | null>(null)
+  const [historyDialogOpen, setHistoryDialogOpen] = useState(false)
+  const [historyPromptId, setHistoryPromptId] = useState<string | null>(null)
   const { toast } = useToast()
   const { t } = useTranslation()
   
@@ -18,6 +22,8 @@ export function PromptsPage() {
   const setSearchQuery = usePromptStore((state) => state.setSearchQuery)
   const getFilteredPrompts = usePromptStore((state) => state.getFilteredPrompts)
   const deletePrompt = usePromptStore((state) => state.deletePrompt)
+  const updatePrompt = usePromptStore((state) => state.updatePrompt)
+  const getPromptById = usePromptStore((state) => state.getPromptById)
   const isHydrated = usePromptStore((state) => state.isHydrated)
   
   const prompts = isHydrated ? getFilteredPrompts() : []
@@ -52,6 +58,22 @@ export function PromptsPage() {
     setEditorMode('edit')
     setEditingPromptId(promptId)
     setEditorOpen(true)
+  }
+  
+  
+  const handleViewHistory = (promptId: string) => {
+    setHistoryPromptId(promptId)
+    setHistoryDialogOpen(true)
+  }
+  
+  const handleRestoreVersion = (version: any) => {
+    if (historyPromptId) {
+      updatePrompt(historyPromptId, { content: version.content })
+      toast({
+        title: t('messages.restoreSuccess'),
+        description: t('messages.restoreDescription'),
+      })
+    }
   }
   
   return (
@@ -115,6 +137,16 @@ export function PromptsPage() {
                     >
                       <Copy className="w-4 h-4" />
                     </Button>
+                    {prompt.versions && prompt.versions.length > 0 && (
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => handleViewHistory(prompt.id)}
+                        title={t('editor.history')}
+                      >
+                        <History className="w-4 h-4" />
+                      </Button>
+                    )}
                     <Button
                       variant="ghost"
                       size="icon"
@@ -150,10 +182,7 @@ export function PromptsPage() {
                   </div>
                   <div className="flex items-center gap-4">
                     {prompt.versions && prompt.versions.length > 0 && (
-                      <div className="flex items-center gap-1 text-muted-foreground">
-                        <History className="w-3 h-3" />
-                        <span>{t('prompts.versionCount', { count: prompt.versions.length })}</span>
-                      </div>
+                      <VersionPreviewTooltip prompt={prompt} />
                     )}
                     <div className="flex items-center gap-1">
                       <Clock className="w-3 h-3" />
@@ -175,6 +204,16 @@ export function PromptsPage() {
           setEditingPromptId(null)
         }}
         mode={editorMode}
+      />
+      
+      <VersionHistoryDialog
+        prompt={historyPromptId ? getPromptById(historyPromptId) : null}
+        isOpen={historyDialogOpen}
+        onClose={() => {
+          setHistoryDialogOpen(false)
+          setHistoryPromptId(null)
+        }}
+        onRestore={handleRestoreVersion}
       />
     </div>
   )

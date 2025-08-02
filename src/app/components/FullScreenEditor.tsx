@@ -37,6 +37,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from './ui/select'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from './ui/dialog'
 
 interface FullScreenEditorProps {
   promptId: string | null
@@ -54,6 +61,7 @@ export function FullScreenEditor({ promptId, isOpen, onClose, mode }: FullScreen
   const [newCategory, setNewCategory] = useState('')
   const [isAddingCategory, setIsAddingCategory] = useState(false)
   const [viewMode, setViewMode] = useState<'edit' | 'preview' | 'split'>('edit')
+  const [selectedVersionForPreview, setSelectedVersionForPreview] = useState<{ content: string; title: string } | null>(null)
   
   const prompts = usePromptStore((state) => state.prompts)
   const getPromptById = usePromptStore((state) => state.getPromptById)
@@ -137,12 +145,11 @@ export function FullScreenEditor({ promptId, isOpen, onClose, mode }: FullScreen
     }
   }, [isOpen, showVersions, onClose, handleSave])
   
-  const handleRestoreVersion = (versionContent: string) => {
+  const handleRestoreVersion = (versionContent: string, versionNumber: number) => {
     setContent(versionContent)
-    setShowVersions(false)
     toast({
       title: t('editor.restore'),
-      description: t('messages.restoreDescription'),
+      description: `${t('messages.restoreDescription')} (v${versionNumber})`,
     })
   }
   
@@ -228,7 +235,7 @@ export function FullScreenEditor({ promptId, isOpen, onClose, mode }: FullScreen
               {t('editor.preview')}
             </Button>
           </div>
-          {mode === 'edit' && prompt?.versions && prompt.versions.length > 0 && (
+          {prompt?.versions && prompt.versions.length > 0 && (
             <Button
               variant="outline"
               size="sm"
@@ -605,41 +612,97 @@ export function FullScreenEditor({ promptId, isOpen, onClose, mode }: FullScreen
               </Button>
             </h3>
             <div className="space-y-3">
-              <div className="p-3 border rounded-lg bg-muted/50">
+              <div className="p-3 border rounded-lg bg-primary/10">
                 <div className="flex justify-between items-start mb-2">
-                  <span className="text-sm font-medium">{t('editor.currentVersion')}</span>
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm font-medium">{t('editor.currentVersion')}</span>
+                    <span className="text-xs bg-primary text-primary-foreground px-1.5 py-0.5 rounded">
+                      v{prompt.versions.length + 1}
+                    </span>
+                  </div>
                   <span className="text-xs text-muted-foreground">
                     {new Date(prompt.updatedAt).toLocaleString()}
                   </span>
                 </div>
                 <p className="text-sm whitespace-pre-wrap line-clamp-3">{prompt.content}</p>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="w-full mt-2"
+                  onClick={() => {
+                    setSelectedVersionForPreview({
+                      content: prompt.content,
+                      title: t('editor.currentVersion') + ` (v${prompt.versions.length + 1})`
+                    })
+                  }}
+                >
+                  <Eye className="w-3 h-3 mr-1" />
+                  {t('editor.preview')}
+                </Button>
               </div>
               
-              {prompt.versions.map((version, index) => (
+              {prompt.versions.slice().reverse().map((version, index) => (
                 <div key={version.id} className="p-3 border rounded-lg hover:bg-muted/30">
                   <div className="flex justify-between items-start mb-2">
-                    <span className="text-sm font-medium">{t('common.version')} {prompt.versions!.length - index}</span>
-                    <div className="flex items-center gap-2">
-                      <span className="text-xs text-muted-foreground">
-                        {new Date(version.createdAt).toLocaleString()}
-                      </span>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => handleRestoreVersion(version.content)}
-                      >
-                        <RotateCcw className="w-3 h-3 mr-1" />
-                        {t('editor.restore')}
-                      </Button>
-                    </div>
+                    <span className="text-sm font-medium">
+                      {t('common.version')} {prompt.versions!.length - index}
+                    </span>
+                    <span className="text-xs text-muted-foreground">
+                      {new Date(version.createdAt).toLocaleString()}
+                    </span>
                   </div>
                   <p className="text-sm whitespace-pre-wrap line-clamp-3">{version.content}</p>
+                  <div className="flex gap-2 mt-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="flex-1"
+                      onClick={() => {
+                        setSelectedVersionForPreview({
+                          content: version.content,
+                          title: t('common.version') + ` ${prompt.versions!.length - index}`
+                        })
+                      }}
+                    >
+                      <Eye className="w-3 h-3 mr-1" />
+                      {t('editor.preview')}
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="flex-1"
+                      onClick={() => handleRestoreVersion(version.content, prompt.versions!.length - index)}
+                    >
+                      <RotateCcw className="w-3 h-3 mr-1" />
+                      {t('editor.restore')}
+                    </Button>
+                  </div>
                 </div>
               ))}
             </div>
           </div>
         )}
       </div>
+      
+      {/* 版本预览对话框 */}
+      <Dialog open={!!selectedVersionForPreview} onOpenChange={() => setSelectedVersionForPreview(null)}>
+        <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Eye className="w-5 h-5" />
+              {selectedVersionForPreview?.title}
+            </DialogTitle>
+            <DialogDescription className="sr-only">
+              {t('editor.versionPreviewDescription')}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="prose prose-neutral dark:prose-invert max-w-none mt-4">
+            <ReactMarkdown remarkPlugins={[remarkGfm]}>
+              {selectedVersionForPreview?.content || ''}
+            </ReactMarkdown>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

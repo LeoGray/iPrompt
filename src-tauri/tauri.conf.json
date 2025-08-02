@@ -1,6 +1,6 @@
 {
   "productName": "iPrompt",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "identifier": "com.leogray.iprompt",
   "build": {
     "beforeDevCommand": "npx vite --host 0.0.0.0 --port 13000 --mode tauri",

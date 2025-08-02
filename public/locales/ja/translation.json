@@ -38,6 +38,13 @@
     "split": "分割",
     "history": "履歴",
     "restore": "復元",
+    "versionList": "バージョンリスト",
+    "compare": "比較",
+    "current": "現在",
+    "selectVersionToPreview": "プレビューするバージョンを選択",
+    "selectVersionToCompare": "比較するバージョンを選択",
+    "recentVersions": "最近のバージョン",
+    "moreVersions": "他に{{count}}個の古いバージョン",
     "currentVersion": "現在のバージョン",
     "shortcuts": {
       "save": "保存 (⌘S)",
@@ -85,6 +92,7 @@
     "storageUsage": "ストレージ使用量",
     "storageInfo": "{{used}} / {{total}} 使用中",
     "storagePercentage": "{{percentage}}%",
+    "storageUsed": "{{used}} 使用中",
     "storageCalculating": "計算中...",
     "language": "言語",
     "theme": "テーマ",
@@ -117,7 +125,8 @@
     "backupNotSupported": "このプラットフォームでは自動バックアップはサポートされていません。エクスポート機能を使用してください",
     "titleRequired": "タイトルを入力してください",
     "contentRequired": "内容を入力してください",
-    "restoreDescription": "選択したバージョンに復元しました。変更を適用するには保存してください"
+    "restoreDescription": "選択したバージョンに復元しました。変更を適用するには保存してください",
+    "restoreSuccess": "復元が成功しました"
   },
   "platform": {
     "web": "ウェブ版",

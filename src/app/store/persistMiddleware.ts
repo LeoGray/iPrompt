@@ -40,6 +40,7 @@ export const customPersist: PersistImpl = <
       prompts.map((p: { category?: string }) => p.category).filter(Boolean)
     )) as string[]
     
+    
     return {
       ...DEFAULT_STORAGE_DATA,
       prompts,
@@ -50,8 +51,19 @@ export const customPersist: PersistImpl = <
 
   // Default deserializer
   const deserialize = options.deserialize || ((storage: StorageData) => {
+    // Convert date strings back to Date objects
+    const prompts = (storage.prompts || []).map((prompt: any) => ({
+      ...prompt,
+      createdAt: new Date(prompt.createdAt),
+      updatedAt: new Date(prompt.updatedAt),
+      versions: prompt.versions?.map((v: any) => ({
+        ...v,
+        createdAt: new Date(v.createdAt)
+      })) || []
+    }))
+    
     return {
-      prompts: storage.prompts || []
+      prompts
     } as any
   })
 

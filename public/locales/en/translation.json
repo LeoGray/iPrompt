@@ -21,6 +21,13 @@
     "promptContent": "Enter prompt content",
     "promptTitle": "Enter prompt title",
     "restore": "Restore",
+    "versionList": "Version List",
+    "compare": "Compare",
+    "current": "Current",
+    "selectVersionToPreview": "Select a version to preview",
+    "selectVersionToCompare": "Select a version to compare",
+    "recentVersions": "Recent Versions",
+    "moreVersions": "{{count}} more older versions",
     "selectCategory": "Select category",
     "shortcuts": {
       "escape": "Cancel (ESC)",
@@ -72,6 +79,7 @@
     "importError": "Import failed",
     "importSuccess": "Import Successful",
     "restoreDescription": "Restored to selected version, please save to apply changes",
+    "restoreSuccess": "Restore Successful",
     "saveDescription": "Prompt saved successfully",
     "saveSuccess": "Saved",
     "titleRequired": "Please enter a title",
@@ -89,8 +97,8 @@
     "emptyState": "No prompts yet, click the button above to create your first prompt",
     "noResults": "No matching prompts found",
     "searchPlaceholder": "Search prompts...",
-    "versionCount_one": "",
-    "versionCount_other": ""
+    "versionCount_one": "{{count}} version",
+    "versionCount_other": "{{count}} versions"
   },
   "samplePrompts": {
     "codeReview": {
@@ -143,6 +151,7 @@
     "storageUsage": "Storage Usage",
     "storageInfo": "{{used}} / {{total}} used",
     "storagePercentage": "{{percentage}}%",
+    "storageUsed": "{{used}} used",
     "storageCalculating": "Calculating...",
     "title": "Settings"
   }
