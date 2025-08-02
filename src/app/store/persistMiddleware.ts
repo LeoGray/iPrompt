@@ -25,10 +25,11 @@ export const customPersist: PersistImpl = (config, options) => (set, get, api) =
   const SAVE_THROTTLE = 1000 // Save at most once per second
 
   // Default serializer
-  const serialize = options.serialize || ((state: any) => {
-    const prompts = state.prompts || []
+  const serialize = options.serialize || ((state: T) => {
+    const stateWithPrompts = state as T & { prompts?: Array<{ category?: string }> }
+    const prompts = stateWithPrompts.prompts || []
     const categories = Array.from(new Set(
-      prompts.map((p: any) => p.category).filter(Boolean)
+      prompts.map((p) => p.category).filter(Boolean)
     )) as string[]
     
     return {
@@ -43,7 +44,7 @@ export const customPersist: PersistImpl = (config, options) => (set, get, api) =
   const deserialize = options.deserialize || ((storage: StorageData) => {
     return {
       prompts: storage.prompts || []
-    } as any
+    } as Partial<T>
   })
 
   // Save function with throttling
@@ -74,10 +75,10 @@ export const customPersist: PersistImpl = (config, options) => (set, get, api) =
         set({
           ...state,
           isHydrated: true
-        } as any)
+        } as T)
       } else {
         // No data, but still mark as hydrated
-        set({ isHydrated: true } as any)
+        set({ isHydrated: true } as T)
       }
       
       isHydrated = true
@@ -85,14 +86,14 @@ export const customPersist: PersistImpl = (config, options) => (set, get, api) =
     } catch (error) {
       console.error('Failed to hydrate state:', error)
       // Even on error, mark as hydrated to show UI
-      set({ isHydrated: true } as any)
+      set({ isHydrated: true } as T)
       onRehydrateStorage?.(undefined, error as Error)
     }
   }
 
   // Create store
   const store = config(
-    ((partial: any, replace?: any) => {
+    ((partial: T | Partial<T> | ((state: T) => T | Partial<T>), replace?: boolean | undefined) => {
       set(partial, replace)
       // Auto-save on state change
       if (isHydrated) {
