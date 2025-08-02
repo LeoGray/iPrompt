@@ -1,142 +1,145 @@
 {
   "common": {
-    "save": "Save",
     "cancel": "Cancel",
+    "confirm": "Confirm",
+    "copy": "Copy",
     "delete": "Delete",
     "edit": "Edit",
-    "copy": "Copy",
-    "confirm": "Confirm",
-    "search": "Search",
     "loading": "Loading...",
     "noData": "No data",
-    "version": "Version",
-    "statistics": "Statistics",
-    "total": "Total",
-    "characters": "characters"
-  },
-  "layout": {
-    "title": "iPrompt",
-    "subtitle": "Prompt Management System",
-    "allPrompts": "All Prompts",
-    "categories": "Categories",
-    "uncategorized": "Uncategorized",
-    "promptCount": "Total {{count}} prompts",
-    "categoryCount": "{{count}}"
+    "version": "Version"
   },
   "editor": {
-    "newPrompt": "New Prompt",
-    "editPrompt": "Edit Prompt",
-    "promptTitle": "Enter prompt title",
-    "promptContent": "Enter prompt content",
-    "selectCategory": "Select category",
     "addNewCategory": "Add new category",
-    "newCategoryPlaceholder": "Enter new category name",
-    "tags": "Tags (comma separated)",
-    "preview": "Preview",
-    "edit": "Edit",
-    "split": "Split",
-    "history": "History",
-    "restore": "Restore",
     "currentVersion": "Current Version",
+    "edit": "Edit",
+    "editPrompt": "Edit Prompt",
+    "history": "History",
+    "newCategoryPlaceholder": "Enter new category name",
+    "newPrompt": "New Prompt",
+    "preview": "Preview",
+    "promptContent": "Enter prompt content",
+    "promptTitle": "Enter prompt title",
+    "restore": "Restore",
+    "selectCategory": "Select category",
     "shortcuts": {
-      "save": "Save (⌘S)",
-      "escape": "Cancel (ESC)"
+      "escape": "Cancel (ESC)",
+      "save": "Save (⌘S)"
+    },
+    "split": "Split",
+    "tags": "Tags (comma separated)",
+    "toolbar": {
+      "bold": "",
+      "code": "",
+      "codeBlock": "",
+      "heading": "",
+      "horizontalRule": "",
+      "italic": "",
+      "link": "",
+      "list": "",
+      "orderedList": "",
+      "quote": "",
+      "strikethrough": "",
+      "task": ""
     }
   },
-  "prompts": {
-    "searchPlaceholder": "Search prompts...",
-    "noResults": "No matching prompts found",
-    "emptyState": "No prompts yet, click the button above to create your first prompt",
-    "deleteConfirm": "Are you sure you want to delete this prompt?",
-    "category": "Category",
-    "tags": "Tags",
-    "updatedAt": "Updated",
-    "versionCount": "{{count}} versions"
-  },
-  "settings": {
-    "title": "Settings",
-    "description": "Manage your prompt data",
-    "dataManagement": "Data Management",
-    "exportData": "Export Data",
-    "importData": "Import Data",
-    "importing": "Importing...",
-    "createBackup": "Create Backup",
-    "statistics": "Statistics",
-    "promptTotal": "Total Prompts",
-    "categoryTotal": "Total Categories",
-    "language": "Language",
-    "theme": "Theme",
-    "languages": {
-      "zh": "中文",
-      "en": "English",
-      "ja": "日本語"
-    }
+  "layout": {
+    "allPrompts": "All Prompts",
+    "categories": "Categories",
+    "promptCount_one": "",
+    "promptCount_other": "",
+    "subtitle": "Prompt Management System",
+    "title": "iPrompt",
+    "uncategorized": "Uncategorized"
   },
   "messages": {
-    "copySuccess": "Copied",
-    "copyDescription": "Prompt content copied to clipboard",
-    "saveSuccess": "Saved",
-    "saveDescription": "Prompt saved successfully",
-    "deleteSuccess": "Deleted",
-    "deleteDescription": "Prompt deleted successfully",
-    "importSuccess": "Import Successful",
-    "importDescription": "Imported {{count}} prompts",
-    "exportSuccess": "Export Successful",
-    "exportDescription": "Exported {{count}} prompts",
-    "backupSuccess": "Backup Successful",
     "backupDescription": "Data backed up to application directory",
-    "error": "Error",
-    "unknownError": "Unknown error",
-    "importError": "Import failed",
-    "exportError": "Export failed",
     "backupError": "Backup failed",
     "backupNotSupported": "Automatic backup not supported on this platform, please use export",
-    "titleRequired": "Please enter a title",
+    "backupSuccess": "Backup Successful",
     "contentRequired": "Please enter content",
-    "restoreDescription": "Restored to selected version, please save to apply changes"
+    "copyDescription": "Prompt content copied to clipboard",
+    "copySuccess": "Copied",
+    "deleteDescription": "Prompt deleted successfully",
+    "deleteSuccess": "Deleted",
+    "error": "Error",
+    "exportDescription_one": "",
+    "exportDescription_other": "",
+    "exportError": "Export failed",
+    "exportSuccess": "Export Successful",
+    "importDescription_one": "",
+    "importDescription_other": "",
+    "importError": "Import failed",
+    "importSuccess": "Import Successful",
+    "restoreDescription": "Restored to selected version, please save to apply changes",
+    "saveDescription": "Prompt saved successfully",
+    "saveSuccess": "Saved",
+    "titleRequired": "Please enter a title",
+    "unknownError": "Unknown error"
   },
   "platform": {
-    "web": "Web Version",
     "desktop": "Desktop Version",
     "environment": "Environment",
-    "platform": "Platform"
+    "platform": "Platform",
+    "web": "Web Version"
   },
-  "welcome": {
-    "title": "Welcome to iPrompt",
-    "subtitle": "Professional Prompt Management System",
-    "description": "iPrompt is a tool designed specifically for managing and organizing AI Prompts, helping you efficiently create, edit, categorize, and search your prompts.",
-    "features": {
-      "title": "Key Features",
-      "organize": "Smart Category Management",
-      "organizeDesc": "Easily organize your prompts using categories and tags",
-      "search": "Powerful Search",
-      "searchDesc": "Quick search and filter to find the prompt you need instantly",
-      "version": "Version History Tracking",
-      "versionDesc": "Automatically save revision history, rollback and restore anytime",
-      "export": "Easy Import/Export",
-      "exportDesc": "Support data import/export for easy backup and migration"
-    },
-    "getStarted": "Get Started",
-    "skipIntro": "Skip Intro"
+  "prompts": {
+    "category": "Category",
+    "deleteConfirm": "Are you sure you want to delete this prompt?",
+    "emptyState": "No prompts yet, click the button above to create your first prompt",
+    "noResults": "No matching prompts found",
+    "searchPlaceholder": "Search prompts...",
+    "versionCount_one": "",
+    "versionCount_other": ""
   },
   "samplePrompts": {
     "codeReview": {
-      "title": "Code Review Assistant",
-      "content": "As a senior developer, please review the following code. Focus on:\n1. Code quality and readability\n2. Potential bugs and security issues\n3. Performance optimization suggestions\n4. Best practice recommendations\n\nCode:\n[Paste code here]",
       "category": "Development",
-      "tags": ["Code Review", "Dev Tools", "代码审查"]
+      "content": "As a senior developer, please review the following code. Focus on:\n1. Code quality and readability\n2. Potential bugs and security issues\n3. Performance optimization suggestions\n4. Best practice recommendations\n\nCode:\n[Paste code here]",
+      "tags": [
+        "Code Review",
+        "Dev Tools",
+        "代码审查"
+      ],
+      "title": "Code Review Assistant"
     },
     "translator": {
-      "title": "Chinese-English Translation Expert",
-      "content": "As a professional Chinese-English translator, I will provide content in Chinese or English. Please:\n1. Translate accurately\n2. Maintain the tone and style of the original\n3. Provide multiple translation options for technical terms\n4. Provide cultural context when necessary\n\nContent to translate:\n[Enter content here]",
       "category": "Translation",
-      "tags": ["Translation", "Chinese-English", "翻译"]
+      "content": "As a professional Chinese-English translator, I will provide content in Chinese or English. Please:\n1. Translate accurately\n2. Maintain the tone and style of the original\n3. Provide multiple translation options for technical terms\n4. Provide cultural context when necessary\n\nContent to translate:\n[Enter content here]",
+      "tags": [
+        "Translation",
+        "Chinese-English",
+        "翻译"
+      ],
+      "title": "Chinese-English Translation Expert"
     },
     "weeklyReport": {
-      "title": "Weekly Report Generator",
-      "content": "Based on the work content I provide, help me generate a professional weekly report. Format requirements:\n1. Work completed this week (sorted by importance)\n2. Problems encountered and solutions\n3. Next week's work plan\n4. Support or resources needed\n\nThis week's work:\n[List this week's work here]",
       "category": "Writing",
-      "tags": ["Weekly Report", "Work Summary", "周报"]
+      "content": "Based on the work content I provide, help me generate a professional weekly report. Format requirements:\n1. Work completed this week (sorted by importance)\n2. Problems encountered and solutions\n3. Next week's work plan\n4. Support or resources needed\n\nThis week's work:\n[List this week's work here]",
+      "tags": [
+        "Weekly Report",
+        "Work Summary",
+        "周报"
+      ],
+      "title": "Weekly Report Generator"
     }
+  },
+  "settings": {
+    "categoryTotal": "Total Categories",
+    "createBackup": "Create Backup",
+    "dataManagement": "Data Management",
+    "description": "Manage your prompt data",
+    "exportData": "Export Data",
+    "importData": "Import Data",
+    "importing": "Importing...",
+    "language": "Language",
+    "languages": {
+      "en": "English",
+      "ja": "日本語",
+      "zh": "中文"
+    },
+    "promptTotal": "Total Prompts",
+    "statistics": "Statistics",
+    "title": "Settings"
   }
 }

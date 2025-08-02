@@ -1,1 +1,162 @@
-{}
+{
+  "common": {
+    "save": "保存",
+    "cancel": "キャンセル",
+    "delete": "削除",
+    "edit": "編集",
+    "copy": "コピー",
+    "confirm": "確認",
+    "search": "検索",
+    "loading": "読み込み中...",
+    "noData": "データなし",
+    "version": "バージョン",
+    "statistics": "統計",
+    "total": "合計",
+    "characters": "文字"
+  },
+  "layout": {
+    "title": "iPrompt",
+    "subtitle": "プロンプト管理システム",
+    "allPrompts": "すべてのプロンプト",
+    "categories": "カテゴリー",
+    "uncategorized": "未分類",
+    "promptCount": "合計 {{count}} 個のプロンプト",
+    "promptCount_other": "合計 {{count}} 個のプロンプト",
+    "categoryCount": "{{count}} 個"
+  },
+  "editor": {
+    "newPrompt": "新規プロンプト",
+    "editPrompt": "プロンプトを編集",
+    "promptTitle": "プロンプトのタイトルを入力",
+    "promptContent": "プロンプトの内容を入力",
+    "selectCategory": "カテゴリーを選択",
+    "addNewCategory": "新しいカテゴリーを追加",
+    "newCategoryPlaceholder": "新しいカテゴリー名を入力",
+    "tags": "タグ（カンマ区切り）",
+    "preview": "プレビュー",
+    "edit": "編集",
+    "split": "分割",
+    "history": "履歴",
+    "restore": "復元",
+    "currentVersion": "現在のバージョン",
+    "shortcuts": {
+      "save": "保存 (⌘S)",
+      "escape": "キャンセル (ESC)"
+    },
+    "toolbar": {
+      "bold": "太字",
+      "italic": "斜体",
+      "strikethrough": "取り消し線",
+      "link": "リンク",
+      "code": "コード",
+      "codeBlock": "コードブロック",
+      "quote": "引用",
+      "list": "箇条書き",
+      "orderedList": "番号付きリスト",
+      "task": "タスクリスト",
+      "table": "テーブル",
+      "image": "画像",
+      "heading": "見出し",
+      "horizontalRule": "区切り線"
+    }
+  },
+  "prompts": {
+    "searchPlaceholder": "プロンプトを検索...",
+    "noResults": "一致するプロンプトが見つかりません",
+    "emptyState": "プロンプトがありません。上のボタンをクリックして最初のプロンプトを作成してください",
+    "deleteConfirm": "このプロンプトを削除してもよろしいですか？",
+    "category": "カテゴリー",
+    "tags": "タグ",
+    "updatedAt": "更新日時",
+    "versionCount": "{{count}} バージョン",
+    "versionCount_other": "{{count}} バージョン"
+  },
+  "settings": {
+    "title": "設定",
+    "description": "プロンプトデータを管理",
+    "dataManagement": "データ管理",
+    "exportData": "データをエクスポート",
+    "importData": "データをインポート",
+    "importing": "インポート中...",
+    "createBackup": "バックアップを作成",
+    "statistics": "統計情報",
+    "promptTotal": "プロンプト総数",
+    "categoryTotal": "カテゴリー数",
+    "language": "言語",
+    "theme": "テーマ",
+    "languages": {
+      "zh": "中文",
+      "en": "English",
+      "ja": "日本語"
+    }
+  },
+  "messages": {
+    "copySuccess": "コピーしました",
+    "copyDescription": "プロンプトの内容をクリップボードにコピーしました",
+    "saveSuccess": "保存しました",
+    "saveDescription": "プロンプトを保存しました",
+    "deleteSuccess": "削除しました",
+    "deleteDescription": "プロンプトを削除しました",
+    "importSuccess": "インポート成功",
+    "importDescription": "{{count}} 件のプロンプトをインポートしました",
+    "importDescription_other": "{{count}} 件のプロンプトをインポートしました",
+    "exportSuccess": "エクスポート成功",
+    "exportDescription": "{{count}} 件のプロンプトをエクスポートしました",
+    "exportDescription_other": "{{count}} 件のプロンプトをエクスポートしました",
+    "backupSuccess": "バックアップ成功",
+    "backupDescription": "データをアプリケーションディレクトリにバックアップしました",
+    "error": "エラー",
+    "unknownError": "不明なエラー",
+    "importError": "インポート失敗",
+    "exportError": "エクスポート失敗",
+    "backupError": "バックアップ失敗",
+    "backupNotSupported": "このプラットフォームでは自動バックアップはサポートされていません。エクスポート機能を使用してください",
+    "titleRequired": "タイトルを入力してください",
+    "contentRequired": "内容を入力してください",
+    "restoreDescription": "選択したバージョンに復元しました。変更を適用するには保存してください"
+  },
+  "platform": {
+    "web": "ウェブ版",
+    "desktop": "デスクトップ版",
+    "environment": "環境",
+    "platform": "プラットフォーム"
+  },
+  "welcome": {
+    "title": "iPromptへようこそ",
+    "subtitle": "プロフェッショナルプロンプト管理システム",
+    "description": "iPromptは、AIプロンプトを管理・整理するために設計されたツールで、プロンプトの作成、編集、分類、検索を効率的に行うことができます。",
+    "features": {
+      "title": "主な機能",
+      "organize": "スマートカテゴリー管理",
+      "organizeDesc": "カテゴリーとタグを使用してプロンプトを簡単に整理",
+      "search": "パワフルな検索",
+      "searchDesc": "素早い検索とフィルタリングで必要なプロンプトを即座に見つける",
+      "version": "バージョン履歴追跡",
+      "versionDesc": "編集履歴を自動保存し、いつでも復元可能",
+      "export": "簡単なインポート/エクスポート",
+      "exportDesc": "データのインポート/エクスポートをサポートし、簡単にバックアップと移行が可能"
+    },
+    "getStarted": "始める",
+    "skipIntro": "スキップ"
+  },
+  "samplePrompts": {
+    "codeReview": {
+      "title": "コードレビューアシスタント",
+      "content": "シニア開発者として、以下のコードをレビューしてください。焦点を当てる点：\n1. コード品質と可読性\n2. 潜在的なバグとセキュリティの問題\n3. パフォーマンス最適化の提案\n4. ベストプラクティスの推奨事項\n\nコード：\n[ここにコードを貼り付け]",
+      "category": "開発",
+      "tags": ["コードレビュー", "開発ツール", "Code Review"]
+    },
+    "translator": {
+      "title": "日英翻訳エキスパート",
+      "content": "プロの日英翻訳者として、日本語または英語のコンテンツを提供します。以下をお願いします：\n1. 正確に翻訳する\n2. 原文のトーンとスタイルを維持する\n3. 専門用語に対して複数の翻訳オプションを提供する\n4. 必要に応じて文化的背景を提供する\n\n翻訳するコンテンツ：\n[ここにコンテンツを入力]",
+      "category": "翻訳",
+      "tags": ["翻訳", "日英", "Translation"]
+    },
+    "weeklyReport": {
+      "title": "週報ジェネレーター",
+      "content": "提供した作業内容に基づいて、プロフェッショナルな週報を生成してください。フォーマット要件：\n1. 今週完了した作業（重要度順）\n2. 遭遇した問題と解決策\n3. 来週の作業計画\n4. 必要なサポートやリソース\n\n今週の作業内容：\n[ここに今週の作業をリスト]",
+      "category": "ライティング",
+      "tags": ["週報", "業務総括", "Report"]
+    }
+  }
+}

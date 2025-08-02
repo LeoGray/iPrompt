@@ -14,34 +14,25 @@
     "total": "总数",
     "characters": "字符"
   },
-  "layout": {
-    "title": "iPrompt",
-    "subtitle": "Prompt 管理系统",
-    "allPrompts": "全部 Prompts",
-    "categories": "分类",
-    "uncategorized": "未分类",
-    "promptCount": "共 {{count}} 个 Prompt",
-    "categoryCount": "{{count}} 个"
-  },
   "editor": {
-    "newPrompt": "新建 Prompt",
-    "editPrompt": "编辑 Prompt",
-    "promptTitle": "输入 Prompt 标题",
-    "promptContent": "输入 Prompt 内容",
-    "selectCategory": "选择分类",
     "addNewCategory": "添加新分类",
-    "newCategoryPlaceholder": "输入新分类名称",
-    "tags": "标签（用逗号分隔）",
-    "preview": "预览",
-    "edit": "编辑",
-    "split": "分屏",
-    "history": "历史版本",
-    "restore": "恢复",
     "currentVersion": "当前版本",
+    "edit": "编辑",
+    "editPrompt": "编辑 Prompt",
+    "history": "历史版本",
+    "newCategoryPlaceholder": "输入新分类名称",
+    "newPrompt": "新建 Prompt",
+    "preview": "预览",
+    "promptContent": "输入 Prompt 内容",
+    "promptTitle": "输入 Prompt 标题",
+    "restore": "恢复",
+    "selectCategory": "选择分类",
     "shortcuts": {
-      "save": "保存 (⌘S)",
-      "escape": "取消 (ESC)"
+      "escape": "取消 (ESC)",
+      "save": "保存 (⌘S)"
     },
+    "split": "分屏",
+    "tags": "标签（用逗号分隔）",
     "toolbar": {
       "bold": "粗体",
       "italic": "斜体",
@@ -59,6 +50,47 @@
       "horizontalRule": "分割线"
     }
   },
+  "layout": {
+    "title": "iPrompt",
+    "subtitle": "Prompt 管理系统",
+    "allPrompts": "全部 Prompts",
+    "categories": "分类",
+    "uncategorized": "未分类",
+    "promptCount": "共 {{count}} 个 Prompt",
+    "promptCount_other": "共 {{count}} 个 Prompt",
+    "categoryCount": "{{count}} 个"
+  },
+  "messages": {
+    "backupDescription": "数据已备份到应用目录",
+    "backupError": "备份失败",
+    "backupNotSupported": "当前平台不支持自动备份，请使用导出功能",
+    "backupSuccess": "备份成功",
+    "contentRequired": "请输入内容",
+    "copyDescription": "Prompt 内容已复制到剪贴板",
+    "copySuccess": "已复制",
+    "deleteDescription": "Prompt 已成功删除",
+    "deleteSuccess": "已删除",
+    "error": "错误",
+    "exportDescription": "已导出 {{count}} 条 Prompt",
+    "exportDescription_other": "已导出 {{count}} 条 Prompt",
+    "exportError": "导出失败",
+    "exportSuccess": "导出成功",
+    "importDescription": "已导入 {{count}} 条 Prompt",
+    "importDescription_other": "已导入 {{count}} 条 Prompt",
+    "importError": "导入失败",
+    "importSuccess": "导入成功",
+    "restoreDescription": "已恢复到选中的版本，请保存以应用更改",
+    "saveDescription": "Prompt 已成功保存",
+    "saveSuccess": "保存成功",
+    "titleRequired": "请输入标题",
+    "unknownError": "未知错误"
+  },
+  "platform": {
+    "desktop": "桌面版本",
+    "environment": "环境",
+    "platform": "平台",
+    "web": "Web 版本"
+  },
   "prompts": {
     "searchPlaceholder": "搜索 Prompts...",
     "noResults": "没有找到匹配的 Prompts",
@@ -67,7 +99,40 @@
     "category": "分类",
     "tags": "标签",
     "updatedAt": "更新于",
-    "versionCount": "{{count}} 个版本"
+    "versionCount": "{{count}} 个版本",
+    "versionCount_other": "{{count}} 个版本"
+  },
+  "samplePrompts": {
+    "codeReview": {
+      "category": "开发",
+      "content": "请作为一名资深开发者，帮我审查以下代码。请关注：\n1. 代码质量和可读性\n2. 潜在的bug和安全问题\n3. 性能优化建议\n4. 最佳实践建议\n\n代码：\n[在此粘贴代码]",
+      "tags": [
+        "代码审查",
+        "开发工具",
+        "Code Review"
+      ],
+      "title": "代码审查助手"
+    },
+    "translator": {
+      "category": "翻译",
+      "content": "请作为一名专业的中英文翻译专家。我会提供中文或英文内容，请你：\n1. 准确翻译内容\n2. 保持原文的语气和风格\n3. 对于专业术语提供多种翻译选择\n4. 必要时提供文化背景说明\n\n需要翻译的内容：\n[在此输入内容]",
+      "tags": [
+        "翻译",
+        "中英文",
+        "Translation"
+      ],
+      "title": "中英文翻译专家"
+    },
+    "weeklyReport": {
+      "category": "写作",
+      "content": "请根据我提供的工作内容，帮我生成一份专业的周报。格式要求：\n1. 本周完成的工作（按重要性排序）\n2. 遇到的问题及解决方案\n3. 下周工作计划\n4. 需要的支持或资源\n\n本周工作内容：\n[在此列出本周工作]",
+      "tags": [
+        "周报",
+        "工作总结",
+        "Report"
+      ],
+      "title": "周报生成器"
+    }
   },
   "settings": {
     "title": "设置",
@@ -88,35 +153,6 @@
       "ja": "日本語"
     }
   },
-  "messages": {
-    "copySuccess": "已复制",
-    "copyDescription": "Prompt 内容已复制到剪贴板",
-    "saveSuccess": "保存成功",
-    "saveDescription": "Prompt 已成功保存",
-    "deleteSuccess": "已删除",
-    "deleteDescription": "Prompt 已成功删除",
-    "importSuccess": "导入成功",
-    "importDescription": "已导入 {{count}} 条 Prompt",
-    "exportSuccess": "导出成功",
-    "exportDescription": "已导出 {{count}} 条 Prompt",
-    "backupSuccess": "备份成功",
-    "backupDescription": "数据已备份到应用目录",
-    "error": "错误",
-    "unknownError": "未知错误",
-    "importError": "导入失败",
-    "exportError": "导出失败",
-    "backupError": "备份失败",
-    "backupNotSupported": "当前平台不支持自动备份，请使用导出功能",
-    "titleRequired": "请输入标题",
-    "contentRequired": "请输入内容",
-    "restoreDescription": "已恢复到选中的版本，请保存以应用更改"
-  },
-  "platform": {
-    "web": "Web 版本",
-    "desktop": "桌面版本",
-    "environment": "环境",
-    "platform": "平台"
-  },
   "welcome": {
     "title": "欢迎使用 iPrompt",
     "subtitle": "专业的 Prompt 管理系统",
@@ -134,25 +170,5 @@
     },
     "getStarted": "开始使用",
     "skipIntro": "跳过介绍"
-  },
-  "samplePrompts": {
-    "codeReview": {
-      "title": "代码审查助手",
-      "content": "请作为一名资深开发者，帮我审查以下代码。请关注：\n1. 代码质量和可读性\n2. 潜在的bug和安全问题\n3. 性能优化建议\n4. 最佳实践建议\n\n代码：\n[在此粘贴代码]",
-      "category": "开发",
-      "tags": ["代码审查", "开发工具", "Code Review"]
-    },
-    "translator": {
-      "title": "中英文翻译专家",
-      "content": "请作为一名专业的中英文翻译专家。我会提供中文或英文内容，请你：\n1. 准确翻译内容\n2. 保持原文的语气和风格\n3. 对于专业术语提供多种翻译选择\n4. 必要时提供文化背景说明\n\n需要翻译的内容：\n[在此输入内容]",
-      "category": "翻译",
-      "tags": ["翻译", "中英文", "Translation"]
-    },
-    "weeklyReport": {
-      "title": "周报生成器",
-      "content": "请根据我提供的工作内容，帮我生成一份专业的周报。格式要求：\n1. 本周完成的工作（按重要性排序）\n2. 遇到的问题及解决方案\n3. 下周工作计划\n4. 需要的支持或资源\n\n本周工作内容：\n[在此列出本周工作]",
-      "category": "写作",
-      "tags": ["周报", "工作总结", "Report"]
-    }
   }
 }

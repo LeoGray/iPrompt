@@ -3,14 +3,27 @@ import { initReactI18next } from 'react-i18next'
 import LanguageDetector from 'i18next-browser-languagedetector'
 import HttpApi from 'i18next-http-backend'
 
+// 获取浏览器语言并映射到支持的语言
+const getBrowserLanguage = () => {
+  const browserLang = navigator.language || navigator.languages?.[0] || 'en'
+  const langCode = browserLang.toLowerCase()
+  
+  // 语言映射
+  if (langCode.startsWith('zh')) return 'zh'
+  if (langCode.startsWith('ja')) return 'ja'
+  if (langCode.startsWith('en')) return 'en'
+  
+  // 默认返回英文
+  return 'en'
+}
+
 i18n
   .use(HttpApi) // 加载翻译文件
   .use(LanguageDetector) // 自动检测用户语言
   .use(initReactI18next) // 初始化 react-i18next
   .init({
-    // 默认语言
-    lng: 'zh',
-    fallbackLng: 'zh',
+    // 不设置 lng，让 LanguageDetector 自动检测
+    fallbackLng: 'en',
     
     // 支持的语言
     supportedLngs: ['zh', 'en', 'ja'],
@@ -30,8 +43,26 @@ i18n
     
     // 检测选项
     detection: {
+      // 检测顺序：先检查 localStorage，再检查浏览器语言
       order: ['localStorage', 'navigator', 'htmlTag'],
+      
+      // 缓存用户选择
       caches: ['localStorage'],
+      
+      // 从 localStorage 查找的键名
+      lookupLocalStorage: 'i18nextLng',
+      
+      // 检查浏览器语言
+      lookupFromNavigator: true,
+      
+      // 转换检测到的语言
+      convertDetectedLanguage: (lng) => {
+        const langCode = lng.toLowerCase()
+        if (langCode.startsWith('zh')) return 'zh'
+        if (langCode.startsWith('ja')) return 'ja'
+        if (langCode.startsWith('en')) return 'en'
+        return 'en'
+      }
     },
     
     // React 选项

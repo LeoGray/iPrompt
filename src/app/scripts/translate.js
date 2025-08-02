@@ -4,26 +4,31 @@ import fs from 'fs/promises'
 import path from 'path'
 import axios from 'axios'
 import dotenv from 'dotenv'
+import { v4 as uuidv4 } from 'uuid'
 
 // 加载环境变量
 dotenv.config()
 
-const DEEPL_API_KEY = process.env.DEEPL_API_KEY
-const DEEPL_API_URL = 'https://api-free.deepl.com/v2/translate'
+const TRANSLATOR_KEY = process.env.AZURE_TRANSLATOR_KEY
+const TRANSLATOR_ENDPOINT = process.env.AZURE_TRANSLATOR_ENDPOINT || 'https://api.cognitive.microsofttranslator.com'
+const TRANSLATOR_REGION = process.env.AZURE_TRANSLATOR_REGION || 'global'
 
 // 支持的目标语言
 const TARGET_LANGUAGES = {
-  en: 'EN-US', // 英语（美式）
-  ja: 'JA'     // 日语
+  en: 'en',    // 英语
+  ja: 'ja'     // 日语
 }
 
 // 源语言
-const SOURCE_LANGUAGE = 'ZH'
+const SOURCE_LANGUAGE = 'zh-Hans' // 简体中文
 
-if (!DEEPL_API_KEY) {
-  console.error('错误：未找到 DEEPL_API_KEY 环境变量')
-  console.error('请在 .env 文件中设置 DEEPL_API_KEY')
-  console.error('获取免费 API Key：https://www.deepl.com/pro-api')
+if (!TRANSLATOR_KEY) {
+  console.error('错误：未找到 AZURE_TRANSLATOR_KEY 环境变量')
+  console.error('请在 .env 文件中设置 AZURE_TRANSLATOR_KEY')
+  console.error('获取免费 API Key：')
+  console.error('1. 访问 https://azure.microsoft.com/free/')
+  console.error('2. 创建免费账户（不需要信用卡）')
+  console.error('3. 创建 Translator 资源（每月200万字符免费）')
   process.exit(1)
 }
 
@@ -69,27 +74,27 @@ function setByPath(obj, path, value) {
  */
 async function translateBatch(texts, targetLang) {
   try {
-    const response = await axios.post(DEEPL_API_URL, null, {
-      params: {
-        auth_key: DEEPL_API_KEY,
-        text: texts,
-        source_lang: SOURCE_LANGUAGE,
-        target_lang: targetLang,
-        preserve_formatting: 1
-      },
-      paramsSerializer: params => {
-        // DeepL API 需要多个 text 参数
-        const searchParams = new URLSearchParams()
-        searchParams.append('auth_key', params.auth_key)
-        searchParams.append('source_lang', params.source_lang)
-        searchParams.append('target_lang', params.target_lang)
-        searchParams.append('preserve_formatting', params.preserve_formatting)
-        params.text.forEach(text => searchParams.append('text', text))
-        return searchParams.toString()
-      }
+    const endpoint = `${TRANSLATOR_ENDPOINT}/translate?api-version=3.0`
+    const params = {
+      from: SOURCE_LANGUAGE,
+      to: targetLang
+    }
+    
+    const headers = {
+      'Ocp-Apim-Subscription-Key': TRANSLATOR_KEY,
+      'Ocp-Apim-Subscription-Region': TRANSLATOR_REGION,
+      'Content-Type': 'application/json',
+      'X-ClientTraceId': uuidv4()
+    }
+    
+    const body = texts.map(text => ({ text }))
+    
+    const response = await axios.post(endpoint, body, {
+      params,
+      headers
     })
     
-    return response.data.translations.map(t => t.text)
+    return response.data.map(item => item.translations[0].text)
   } catch (error) {
     console.error('翻译错误：', error.response?.data || error.message)
     throw error
@@ -146,8 +151,8 @@ async function translateLanguage(sourcePath, targetPath, targetLang) {
     
     console.log(`需要翻译 ${textsToTranslate.length} 个文本`)
     
-    // 批量翻译（DeepL 支持一次最多 50 个文本）
-    const batchSize = 50
+    // 批量翻译（Microsoft Translator 支持一次最多 100 个文本）
+    const batchSize = 100
     for (let i = 0; i < textsToTranslate.length; i += batchSize) {
       const batch = textsToTranslate.slice(i, i + batchSize)
       const texts = batch.map(item => item.text)
@@ -181,7 +186,7 @@ async function translateLanguage(sourcePath, targetPath, targetLang) {
  */
 async function main() {
   console.log('开始自动翻译...')
-  console.log(`使用 DeepL API (Free)`)
+  console.log(`使用 Microsoft Translator API`)
   
   const localesDir = path.join(process.cwd(), 'public', 'locales')
   const sourcePath = path.join(localesDir, 'zh', 'translation.json')
@@ -195,7 +200,7 @@ async function main() {
   }
   
   // 翻译到各个目标语言
-  for (const [lang, deeplLang] of Object.entries(TARGET_LANGUAGES)) {
+  for (const [lang, msLang] of Object.entries(TARGET_LANGUAGES)) {
     const targetPath = path.join(localesDir, lang, 'translation.json')
     await translateLanguage(sourcePath, targetPath, lang)
   }
