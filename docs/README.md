@@ -11,7 +11,6 @@ Welcome to the iPrompt documentation! Please select your preferred language:
 ### [中文文档](zh/)
 - [项目介绍](zh/README.md)
 - [Cloudflare 部署指南](zh/cloudflare-deployment.md)
-- [存储调试指南](zh/storage-debug.md)
 
 ## 🔗 Quick Links
 

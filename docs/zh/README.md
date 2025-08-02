@@ -156,7 +156,6 @@ docker-compose -f docker-compose.prod.yml up -d
 ## 相关文档
 
 - [部署到 Cloudflare](cloudflare-deployment.md)
-- [存储调试指南](storage-debug.md)
 
 ## License
 
