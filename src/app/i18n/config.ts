@@ -3,20 +3,6 @@ import { initReactI18next } from 'react-i18next'
 import LanguageDetector from 'i18next-browser-languagedetector'
 import HttpApi from 'i18next-http-backend'
 
-// 获取浏览器语言并映射到支持的语言
-const getBrowserLanguage = () => {
-  const browserLang = navigator.language || navigator.languages?.[0] || 'en'
-  const langCode = browserLang.toLowerCase()
-  
-  // 语言映射
-  if (langCode.startsWith('zh')) return 'zh'
-  if (langCode.startsWith('ja')) return 'ja'
-  if (langCode.startsWith('en')) return 'en'
-  
-  // 默认返回英文
-  return 'en'
-}
-
 i18n
   .use(HttpApi) // 加载翻译文件
   .use(LanguageDetector) // 自动检测用户语言
@@ -52,11 +38,8 @@ i18n
       // 从 localStorage 查找的键名
       lookupLocalStorage: 'i18nextLng',
       
-      // 检查浏览器语言
-      lookupFromNavigator: true,
-      
       // 转换检测到的语言
-      convertDetectedLanguage: (lng) => {
+      convertDetectedLanguage: (lng: string) => {
         const langCode = lng.toLowerCase()
         if (langCode.startsWith('zh')) return 'zh'
         if (langCode.startsWith('ja')) return 'ja'

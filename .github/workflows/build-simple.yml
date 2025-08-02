@@ -89,12 +89,14 @@ jobs:
         run: |
           npm cache clean --force
           npm install
-          # Force install platform-specific rollup binary for each OS
-          if [ "${{ matrix.platform.os }}" == "ubuntu-latest" ]; then
+          # Force install platform-specific rollup binary for each target
+          if [ "${{ matrix.platform.target }}" == "x86_64-unknown-linux-gnu" ]; then
             npm install @rollup/rollup-linux-x64-gnu
-          elif [ "${{ matrix.platform.os }}" == "macos-latest" ]; then
+          elif [ "${{ matrix.platform.target }}" == "x86_64-apple-darwin" ]; then
+            npm install @rollup/rollup-darwin-x64
+          elif [ "${{ matrix.platform.target }}" == "aarch64-apple-darwin" ]; then
             npm install @rollup/rollup-darwin-arm64
-          elif [ "${{ matrix.platform.os }}" == "windows-latest" ]; then
+          elif [ "${{ matrix.platform.target }}" == "x86_64-pc-windows-msvc" ]; then
             npm install @rollup/rollup-win32-x64-msvc
           fi
         shell: bash
