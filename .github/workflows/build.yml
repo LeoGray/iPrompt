@@ -211,22 +211,58 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
-      - name: Download Web artifacts
+      - name: Download all artifacts
         uses: actions/download-artifact@v4
         with:
-          name: web-dist
-          path: web-dist
+          path: artifacts
+      
+      - name: Display structure of downloaded files
+        run: ls -la artifacts/
       
       - name: Create Web archive
         run: |
-          cd web-dist
-          zip -r ../iprompt-web-${{ github.ref_name }}.zip .
-          cd ..
+          cd artifacts/web-dist
+          zip -r ../../iprompt-web-${{ github.ref_name }}.zip .
+          cd ../..
       
-      - name: Upload Web archive to release
+      - name: Prepare release assets
+        run: |
+          mkdir -p release-assets
+          
+          # Copy Web archive
+          cp iprompt-web-${{ github.ref_name }}.zip release-assets/
+          
+          # Copy Linux artifacts
+          if [ -d "artifacts/tauri-Linux" ]; then
+            find artifacts/tauri-Linux -name "*.deb" -exec cp {} release-assets/ \;
+            find artifacts/tauri-Linux -name "*.AppImage" -exec cp {} release-assets/ \;
+            find artifacts/tauri-Linux -name "*.rpm" -exec cp {} release-assets/ \;
+          fi
+          
+          # Copy macOS x64 artifacts
+          if [ -d "artifacts/tauri-macOS-x64" ]; then
+            find artifacts/tauri-macOS-x64 -name "*.dmg" -exec cp {} release-assets/iprompt_${{ github.ref_name }}_x64.dmg \;
+          fi
+          
+          # Copy macOS arm64 artifacts
+          if [ -d "artifacts/tauri-macOS-arm64" ]; then
+            find artifacts/tauri-macOS-arm64 -name "*.dmg" -exec cp {} release-assets/iprompt_${{ github.ref_name }}_aarch64.dmg \;
+          fi
+          
+          # Copy Windows artifacts
+          if [ -d "artifacts/tauri-Windows" ]; then
+            find artifacts/tauri-Windows -name "*.msi" -exec cp {} release-assets/ \;
+            find artifacts/tauri-Windows -name "*.exe" -exec cp {} release-assets/ \;
+          fi
+          
+          # List all release assets
+          echo "=== Release assets ==="
+          ls -la release-assets/
+      
+      - name: Upload all assets to release
         uses: softprops/action-gh-release@v1
         with:
-          files: iprompt-web-${{ github.ref_name }}.zip
+          files: release-assets/*
           draft: true
           prerelease: false
         env:
