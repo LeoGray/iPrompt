@@ -2,7 +2,8 @@ import { IStorageService, StorageData, StorageUsageInfo } from './types'
 
 // Dynamic imports for Tauri APIs
 let tauriInvoke: ((cmd: string, args?: Record<string, unknown>) => Promise<unknown>) | null = null
-let tauriDialog: { save: (options?: unknown) => Promise<string | null>; open: (options?: unknown) => Promise<string | string[] | null> } | null = null
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+let tauriDialog: any = null
 let tauriFs: { writeTextFile: (path: string, content: string) => Promise<void>; readTextFile: (path: string) => Promise<string> } | null = null
 
 // Initialize Tauri APIs
