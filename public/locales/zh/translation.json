@@ -145,6 +145,10 @@
     "statistics": "统计信息",
     "promptTotal": "Prompt 总数",
     "categoryTotal": "分类数",
+    "storageUsage": "存储使用量",
+    "storageInfo": "已使用 {{used}} / {{total}}",
+    "storagePercentage": "{{percentage}}%",
+    "storageCalculating": "计算中...",
     "language": "语言",
     "theme": "主题",
     "languages": {

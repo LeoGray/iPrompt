@@ -17,6 +17,13 @@ export interface BackupInfo {
   size?: number
 }
 
+// 存储使用情况
+export interface StorageUsageInfo {
+  used: number      // 已使用字节数
+  limit: number     // 限制字节数（预设值）
+  percentage: number // 使用百分比
+}
+
 // 存储服务接口
 export interface IStorageService {
   // 基础操作
@@ -26,6 +33,9 @@ export interface IStorageService {
   // 导入导出
   exportData(): Promise<Blob>
   importData(file: File): Promise<StorageData>
+  
+  // 存储使用情况
+  getStorageUsage(): Promise<StorageUsageInfo>
   
   // 备份管理（可选）
   createBackup?(): Promise<void>

@@ -1,4 +1,6 @@
-import { IStorageService, StorageData } from './types'
+import { IStorageService, StorageData, StorageUsageInfo } from './types'
+
+const STORAGE_LIMIT = 5 * 1024 * 1024 // 5MB 限制
 
 // Tauri storage implementation using file system
 export class TauriStorage implements IStorageService {
@@ -157,6 +159,31 @@ export class TauriStorage implements IStorageService {
     } catch (error) {
       console.error('Failed to create backup:', error)
       throw error
+    }
+  }
+
+  async getStorageUsage(): Promise<StorageUsageInfo> {
+    try {
+      const data = await this.load()
+      
+      // 计算数据大小
+      const dataSize = data 
+        ? new Blob([JSON.stringify(data)]).size 
+        : 0
+      
+      // 返回使用情况
+      return {
+        used: dataSize,
+        limit: STORAGE_LIMIT,
+        percentage: Math.round((dataSize / STORAGE_LIMIT) * 100)
+      }
+    } catch (error) {
+      console.error('Error calculating storage usage:', error)
+      return {
+        used: 0,
+        limit: STORAGE_LIMIT,
+        percentage: 0
+      }
     }
   }
 }

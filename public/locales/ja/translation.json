@@ -82,6 +82,10 @@
     "statistics": "統計情報",
     "promptTotal": "プロンプト総数",
     "categoryTotal": "カテゴリー数",
+    "storageUsage": "ストレージ使用量",
+    "storageInfo": "{{used}} / {{total}} 使用中",
+    "storagePercentage": "{{percentage}}%",
+    "storageCalculating": "計算中...",
     "language": "言語",
     "theme": "テーマ",
     "languages": {

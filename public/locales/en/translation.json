@@ -140,6 +140,10 @@
     },
     "promptTotal": "Total Prompts",
     "statistics": "Statistics",
+    "storageUsage": "Storage Usage",
+    "storageInfo": "{{used}} / {{total}} used",
+    "storagePercentage": "{{percentage}}%",
+    "storageCalculating": "Calculating...",
     "title": "Settings"
   }
 }

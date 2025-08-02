@@ -1,9 +1,10 @@
-import { IStorageService, StorageData, DEFAULT_STORAGE_DATA } from './types'
+import { IStorageService, StorageData, StorageUsageInfo, DEFAULT_STORAGE_DATA } from './types'
 import { Prompt, PromptVersion } from '../../store/promptStore'
 
 const DB_NAME = 'iPromptDB'
 const DB_VERSION = 1
 const STORE_NAME = 'prompts'
+const STORAGE_LIMIT = 5 * 1024 * 1024 // 5MB 限制
 
 export class WebStorage implements IStorageService {
   private db: IDBDatabase | null = null
@@ -216,6 +217,31 @@ export class WebStorage implements IStorageService {
         }).filter(Boolean) as string[]
       )),
       lastModified: new Date().toISOString()
+    }
+  }
+
+  async getStorageUsage(): Promise<StorageUsageInfo> {
+    try {
+      const data = await this.load()
+      
+      // 计算数据大小
+      const dataSize = data 
+        ? new Blob([JSON.stringify(data)]).size 
+        : 0
+      
+      // 返回使用情况
+      return {
+        used: dataSize,
+        limit: STORAGE_LIMIT,
+        percentage: Math.round((dataSize / STORAGE_LIMIT) * 100)
+      }
+    } catch (error) {
+      console.error('Error calculating storage usage:', error)
+      return {
+        used: 0,
+        limit: STORAGE_LIMIT,
+        percentage: 0
+      }
     }
   }
 }

@@ -1,4 +1,4 @@
-import { IStorageService, StorageData } from './types'
+import { IStorageService, StorageData, StorageUsageInfo } from './types'
 import { WebStorage } from './webStorage'
 import { TauriStorage } from './tauriStorage'
 
@@ -71,6 +71,10 @@ class StorageManager {
       return this.storage.createBackup()
     }
     throw new Error('Backup not supported on this platform')
+  }
+
+  async getStorageUsage(): Promise<StorageUsageInfo> {
+    return this.storage.getStorageUsage()
   }
 
   // Helper method to download blob (for web export)

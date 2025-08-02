@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { Settings, Download, Upload, Save, Globe } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { Settings, Download, Upload, Save, Globe, HardDrive } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import {
   Dialog,
@@ -17,16 +17,40 @@ import {
   SelectTrigger,
   SelectValue,
 } from './ui/select'
+import { Progress } from './ui/progress'
 import { storageManager } from '../services/storage'
 import { usePromptStore } from '../store/promptStore'
 import { useToast } from './ui/use-toast'
+import { formatBytes } from '../utils/formatters'
+import type { StorageUsageInfo } from '../services/storage/types'
+import { cn } from '@/lib/utils'
 
 export function SettingsDialog() {
   const [open, setOpen] = useState(false)
   const [importing, setImporting] = useState(false)
+  const [storageInfo, setStorageInfo] = useState<StorageUsageInfo | null>(null)
+  const [loadingStorage, setLoadingStorage] = useState(false)
   const { toast } = useToast()
   const { t, i18n } = useTranslation()
   const prompts = usePromptStore((state) => state.prompts)
+
+  useEffect(() => {
+    if (open) {
+      loadStorageInfo()
+    }
+  }, [open, prompts])
+
+  const loadStorageInfo = async () => {
+    setLoadingStorage(true)
+    try {
+      const usage = await storageManager.getStorageUsage()
+      setStorageInfo(usage)
+    } catch (error) {
+      console.error('Failed to load storage info:', error)
+    } finally {
+      setLoadingStorage(false)
+    }
+  }
 
   const handleExport = async () => {
     try {
@@ -149,10 +173,38 @@ export function SettingsDialog() {
 
           <div className="space-y-2">
             <h3 className="text-sm font-medium">{t('settings.statistics')}</h3>
-            <div className="text-sm text-muted-foreground">
+            <div className="text-sm text-muted-foreground space-y-1">
               <p>{t('settings.promptTotal')}: {prompts.length}</p>
               <p>{t('settings.categoryTotal')}: {new Set(prompts.map(p => p.category).filter(Boolean)).size}</p>
             </div>
+          </div>
+
+          <div className="space-y-2">
+            <h3 className="text-sm font-medium flex items-center gap-2">
+              <HardDrive className="h-4 w-4" />
+              {t('settings.storageUsage')}
+            </h3>
+            {loadingStorage ? (
+              <p className="text-sm text-muted-foreground">{t('settings.storageCalculating')}</p>
+            ) : storageInfo ? (
+              <div className="space-y-2">
+                <div className="flex justify-between text-sm">
+                  <span className="text-muted-foreground">
+                    {t('settings.storageInfo', {
+                      used: formatBytes(storageInfo.used, i18n.language),
+                      total: formatBytes(storageInfo.limit, i18n.language)
+                    })}
+                  </span>
+                  <span className={cn(
+                    "font-medium",
+                    storageInfo.percentage > 80 ? "text-destructive" : "text-muted-foreground"
+                  )}>
+                    {t('settings.storagePercentage', { percentage: storageInfo.percentage })}
+                  </span>
+                </div>
+                <Progress value={storageInfo.percentage} className="h-2" />
+              </div>
+            ) : null}
           </div>
 
           <div className="space-y-2">

@@ -1,12 +1,22 @@
 name: Build and Release
 
 on:
+  # 仅在打标签时自动触发
   push:
-    branches: [ main ]
     tags: [ 'v*' ]
-  pull_request:
-    branches: [ main ]
+  # 手动触发
   workflow_dispatch:
+    inputs:
+      build_web:
+        description: 'Build Web version'
+        required: false
+        default: true
+        type: boolean
+      build_tauri:
+        description: 'Build Tauri desktop version'
+        required: false
+        default: true
+        type: boolean
 
 jobs:
   # 代码检查
@@ -39,6 +49,7 @@ jobs:
     name: Build Web Version
     needs: lint-and-typecheck
     runs-on: ubuntu-latest
+    if: github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && github.event.inputs.build_web == 'true')
     
     steps:
       - uses: actions/checkout@v4
@@ -70,6 +81,7 @@ jobs:
   build-tauri:
     name: Build Tauri - ${{ matrix.platform.name }}
     needs: lint-and-typecheck
+    if: github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && github.event.inputs.build_tauri == 'true')
     strategy:
       fail-fast: false
       matrix:
@@ -135,24 +147,58 @@ jobs:
       - name: Build Tauri app
         run: npm run tauri build -- --target ${{ matrix.platform.rust_target }}
         
-      - name: List build outputs
+      - name: List build outputs (Unix)
+        if: matrix.platform.os != 'windows-latest'
         run: |
           echo "=== Finding all executables and bundles ==="
           find src-tauri/target -type f \( -name "*.dmg" -o -name "*.app" -o -name "*.msi" -o -name "*.exe" -o -name "*.deb" -o -name "*.AppImage" -o -name "iprompt*" \) 2>/dev/null || true
-          echo "=== Checking standard bundle location ==="
-          ls -la src-tauri/target/release/bundle/ 2>/dev/null || true
           echo "=== Checking target-specific bundle location ==="
           ls -la src-tauri/target/${{ matrix.platform.rust_target }}/release/bundle/ 2>/dev/null || true
+      
+      - name: List build outputs (Windows)
+        if: matrix.platform.os == 'windows-latest'
+        shell: pwsh
+        run: |
+          Write-Host "=== Finding all executables and bundles ==="
+          Get-ChildItem -Path "src-tauri\target" -Recurse -Include @("*.msi", "*.exe", "*.nsis", "iprompt*") -ErrorAction SilentlyContinue | ForEach-Object { Write-Host $_.FullName }
+          Write-Host "=== Checking target-specific bundle location ==="
+          $bundlePath = "src-tauri\target\${{ matrix.platform.rust_target }}\release\bundle"
+          if (Test-Path $bundlePath) {
+            Get-ChildItem $bundlePath -Recurse -ErrorAction SilentlyContinue | ForEach-Object { Write-Host $_.FullName }
+          } else {
+            Write-Host "Bundle directory not found: $bundlePath"
+          }
         
-      - name: Upload artifacts
+      - name: Upload artifacts (Linux)
+        if: matrix.platform.os == 'ubuntu-latest'
         uses: actions/upload-artifact@v4
         with:
           name: tauri-${{ matrix.platform.name }}
           path: |
-            src-tauri/target/release/bundle/**/*
-            src-tauri/target/${{ matrix.platform.rust_target }}/release/bundle/**/*
-            src-tauri/target/release/iprompt*
-            src-tauri/target/${{ matrix.platform.rust_target }}/release/iprompt*
+            src-tauri/target/${{ matrix.platform.rust_target }}/release/bundle/deb/*.deb
+            src-tauri/target/${{ matrix.platform.rust_target }}/release/bundle/appimage/*.AppImage
+            src-tauri/target/${{ matrix.platform.rust_target }}/release/bundle/rpm/*.rpm
+          retention-days: 7
+      
+      - name: Upload artifacts (macOS)
+        if: matrix.platform.os == 'macos-latest'
+        uses: actions/upload-artifact@v4
+        with:
+          name: tauri-${{ matrix.platform.name }}
+          path: |
+            src-tauri/target/${{ matrix.platform.rust_target }}/release/bundle/dmg/*.dmg
+            src-tauri/target/${{ matrix.platform.rust_target }}/release/bundle/macos/*.app
+          retention-days: 7
+      
+      - name: Upload artifacts (Windows)
+        if: matrix.platform.os == 'windows-latest'
+        uses: actions/upload-artifact@v4
+        with:
+          name: tauri-${{ matrix.platform.name }}
+          path: |
+            src-tauri/target/${{ matrix.platform.rust_target }}/release/bundle/msi/*.msi
+            src-tauri/target/${{ matrix.platform.rust_target }}/release/bundle/nsis/*.exe
+            src-tauri/target/${{ matrix.platform.rust_target }}/release/*.exe
           retention-days: 7
 
   # 创建 Release（仅在打 tag 时触发）
