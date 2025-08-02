@@ -55,7 +55,6 @@ class DynamicPlatformAPI implements IPlatformAPI {
   }
 
   async getVersion(): Promise<string> {
-    // @ts-ignore - Vite env types
     return import.meta.env.VITE_APP_VERSION || '0.1.0'
   }
 
