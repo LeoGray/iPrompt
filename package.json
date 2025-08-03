@@ -1,6 +1,6 @@
 {
   "name": "iprompt",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "Prompt Management System - Tauri-based desktop and web application",
   "author": "Leo Gray",
   "license": "MIT",
