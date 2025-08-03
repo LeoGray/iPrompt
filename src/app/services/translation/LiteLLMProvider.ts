@@ -1,13 +1,14 @@
 import { 
   TranslationProvider, 
   ConfigField, 
-  SUPPORTED_PROVIDERS 
+  SUPPORTED_PROVIDERS,
+  ProviderConfig 
 } from '../../types/translation'
 
 export class LiteLLMTranslationProvider implements TranslationProvider {
   id = 'litellm'
   name = 'AI 翻译服务'
-  type: 'ai' = 'ai'
+  type = 'ai' as const
   icon = '🤖'
   requiresAuth = true
   supportedLanguages = ['en', 'zh', 'ja', 'es', 'fr', 'de', 'ko', 'ru', 'pt', 'it']
@@ -52,7 +53,7 @@ export class LiteLLMTranslationProvider implements TranslationProvider {
     }
   ]
   
-  async validateConfig(config: any): Promise<boolean> {
+  async validateConfig(config: ProviderConfig): Promise<boolean> {
     if (!config.provider || !config.apiKey) {
       return false
     }
@@ -67,10 +68,10 @@ export class LiteLLMTranslationProvider implements TranslationProvider {
   async translate(
     text: string, 
     targetLang: string, 
-    config: any
+    config: ProviderConfig
   ): Promise<string> {
     try {
-      const model = config.provider === 'custom' ? config.customModel : config.provider
+      const model = (config.provider === 'custom' ? config.customModel : config.provider) as string
       
       // 根据不同的 provider 调用不同的 API
       if (model.startsWith('openai/')) {
@@ -84,16 +85,16 @@ export class LiteLLMTranslationProvider implements TranslationProvider {
         return this.translateWithOpenAI(text, targetLang, config, model)
       }
       
-    } catch (error: any) {
+    } catch (error) {
       console.error('Translation error:', error)
-      throw new Error(`翻译失败: ${error.message || '未知错误'}`)
+      throw new Error(`翻译失败: ${error instanceof Error ? error.message : '未知错误'}`)
     }
   }
   
   private async translateWithOpenAI(
     text: string,
     targetLang: string,
-    config: any,
+    config: ProviderConfig,
     model: string
   ): Promise<string> {
     const baseUrl = config.baseUrl || 'https://api.openai.com/v1'
@@ -110,7 +111,7 @@ export class LiteLLMTranslationProvider implements TranslationProvider {
         messages: [
           {
             role: 'system',
-            content: config.customPrompt || this.getDefaultPrompt(targetLang)
+            content: (config.customPrompt as string) || this.getDefaultPrompt(targetLang)
           },
           {
             role: 'user',
@@ -134,7 +135,7 @@ export class LiteLLMTranslationProvider implements TranslationProvider {
   private async translateWithAnthropic(
     text: string,
     targetLang: string,
-    config: any,
+    config: ProviderConfig,
     model: string
   ): Promise<string> {
     const baseUrl = config.baseUrl || 'https://api.anthropic.com/v1'
@@ -144,7 +145,7 @@ export class LiteLLMTranslationProvider implements TranslationProvider {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'x-api-key': config.apiKey,
+        'x-api-key': config.apiKey as string,
         'anthropic-version': '2023-06-01'
       },
       body: JSON.stringify({
@@ -153,7 +154,7 @@ export class LiteLLMTranslationProvider implements TranslationProvider {
         messages: [
           {
             role: 'user',
-            content: `${config.customPrompt || this.getDefaultPrompt(targetLang)}\n\nText to translate:\n${text}`
+            content: `${(config.customPrompt as string) || this.getDefaultPrompt(targetLang)}\n\nText to translate:\n${text}`
           }
         ]
       })
@@ -171,7 +172,7 @@ export class LiteLLMTranslationProvider implements TranslationProvider {
   private async translateWithGemini(
     text: string,
     targetLang: string,
-    config: any,
+    config: ProviderConfig,
     model: string
   ): Promise<string> {
     const modelName = model.replace('gemini/', '')
@@ -185,7 +186,7 @@ export class LiteLLMTranslationProvider implements TranslationProvider {
       body: JSON.stringify({
         contents: [{
           parts: [{
-            text: `${config.customPrompt || this.getDefaultPrompt(targetLang)}\n\nText to translate:\n${text}`
+            text: `${(config.customPrompt as string) || this.getDefaultPrompt(targetLang)}\n\nText to translate:\n${text}`
           }]
         }],
         generationConfig: {

@@ -133,7 +133,7 @@ export function FullScreenEditor({ promptId, isOpen, onClose, mode }: FullScreen
     }
     
     onClose()
-  }, [title, content, category, tags, mode, promptId, updatePrompt, addPrompt, toast, t, onClose])
+  }, [title, content, category, tags, mode, promptId, updatePrompt, addPrompt, toast, t, onClose, enableTranslation, translations])
   
   // 键盘快捷键
   useEffect(() => {

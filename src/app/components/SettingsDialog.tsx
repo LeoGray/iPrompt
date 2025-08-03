@@ -37,7 +37,7 @@ export function SettingsDialog() {
       loadStorageInfo()
       loadSettings()
     }
-  }, [open, prompts])
+  }, [open, prompts, loadSettings])
 
   const loadStorageInfo = async () => {
     setLoadingStorage(true)

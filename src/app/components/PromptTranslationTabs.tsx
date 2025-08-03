@@ -124,7 +124,8 @@ export function PromptTranslationTabs({
   }
   
   const handleDeleteTranslation = (lang: string) => {
-    const { [lang]: _, ...rest } = editedTranslations
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { [lang]: removed, ...rest } = editedTranslations
     setEditedTranslations(rest)
     onTranslationChange(rest)
     setActiveTab('original')

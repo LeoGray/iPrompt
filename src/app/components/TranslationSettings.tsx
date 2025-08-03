@@ -9,7 +9,7 @@ import { Switch } from './ui/switch'
 import { Textarea } from './ui/textarea'
 import { useToast } from './ui/use-toast'
 import { TranslationManager } from '../services/translation/TranslationManager'
-import { TranslationSettings as TranslationSettingsType } from '../types/translation'
+import { TranslationSettings as TranslationSettingsType, ConfigField } from '../types/translation'
 
 interface TranslationSettingsProps {
   settings: TranslationSettingsType
@@ -33,7 +33,7 @@ export function TranslationSettings({ settings, onSettingsChange }: TranslationS
     manager.updateSettings(settings)
   }, [settings, manager])
   
-  const handleConfigChange = (key: string, value: any) => {
+  const handleConfigChange = (key: string, value: string) => {
     onSettingsChange({
       ...settings,
       configs: {
@@ -119,7 +119,7 @@ export function TranslationSettings({ settings, onSettingsChange }: TranslationS
     })
   }
   
-  const renderConfigField = (field: any) => {
+  const renderConfigField = (field: ConfigField) => {
     const value = currentConfig[field.key] || field.defaultValue || ''
     
     switch (field.type) {
@@ -135,7 +135,7 @@ export function TranslationSettings({ settings, onSettingsChange }: TranslationS
                 <SelectValue placeholder={field.placeholder} />
               </SelectTrigger>
               <SelectContent>
-                {field.options?.map((option: any) => (
+                {field.options?.map((option) => (
                   <SelectItem key={option.value} value={option.value}>
                     {option.label}
                   </SelectItem>
@@ -203,7 +203,7 @@ export function TranslationSettings({ settings, onSettingsChange }: TranslationS
   }
   
   // 根据选择的 provider 显示不同的配置字段
-  const shouldShowField = (field: any) => {
+  const shouldShowField = (field: ConfigField) => {
     const selectedProvider = currentConfig.provider || field.defaultValue
     if (field.key === 'customModel') {
       return selectedProvider === 'custom'

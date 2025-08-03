@@ -8,12 +8,12 @@ export interface TranslationProvider {
   
   configSchema: ConfigField[]
   
-  validateConfig(config: any): Promise<boolean>
+  validateConfig(config: ProviderConfig): Promise<boolean>
   
   translate(
     text: string, 
     targetLang: string, 
-    config: any
+    config: ProviderConfig
   ): Promise<string>
 }
 
@@ -42,7 +42,7 @@ export interface ProviderConfig {
   endpoint?: string
   model?: string
   customPrompt?: string
-  [key: string]: any
+  [key: string]: string | undefined
 }
 
 export interface TranslationHistory {
