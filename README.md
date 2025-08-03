@@ -3,7 +3,7 @@
 [简体中文](docs/zh/README.md) | English
 
 [![CI](https://github.com/LeoGray/iprompt/actions/workflows/ci.yml/badge.svg)](https://github.com/LeoGray/iprompt/actions/workflows/ci.yml)
-[![Build and Release](https://github.com/LeoGray/iprompt/actions/workflows/build.yml/badge.svg)](https://github.com/LeoGray/iprompt/actions/workflows/build.yml)
+[![Build and Release](https://github.com/LeoGray/iprompt/actions/workflows/build.yml/badge.svg)](https://github.com/LeoGray/iprompt/actions/workflows/release.yml)
 
 A cross-platform prompt management system with Tauri desktop and web support, featuring Docker-based development and deployment.
 
