@@ -1,12 +1,19 @@
-name: Build and Release
+name: Release
 
 on:
-  # 仅在打标签时自动触发
+  # 版本文件变化时自动触发
   push:
-    tags: [ 'v*' ]
-  # 手动触发
+    branches: [ main ]
+    paths:
+      - 'version.json'
+  # 手动触发构建
   workflow_dispatch:
     inputs:
+      skip_version_check:
+        description: 'Skip version check and force build'
+        required: false
+        default: false
+        type: boolean
       build_web:
         description: 'Build Web version'
         required: false
@@ -19,9 +26,88 @@ on:
         type: boolean
 
 jobs:
+  # 检查版本并创建 tag
+  prepare-release:
+    name: Prepare Release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    outputs:
+      should_release: ${{ steps.check.outputs.should_release }}
+      version: ${{ steps.version.outputs.version }}
+    
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Get current version
+        id: version
+        run: |
+          VERSION=$(jq -r .version version.json)
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Current version: $VERSION"
+      
+      - name: Check if should release
+        id: check
+        run: |
+          # 手动触发且跳过版本检查
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" && "${{ github.event.inputs.skip_version_check }}" == "true" ]]; then
+            echo "Manual trigger with skip_version_check"
+            echo "should_release=true" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+          
+          # 检查是否已存在该版本的 tag
+          if git rev-parse "v${{ steps.version.outputs.version }}" >/dev/null 2>&1; then
+            echo "Tag v${{ steps.version.outputs.version }} already exists"
+            echo "should_release=false" >> $GITHUB_OUTPUT
+          else
+            echo "Tag v${{ steps.version.outputs.version }} does not exist, will create release"
+            echo "should_release=true" >> $GITHUB_OUTPUT
+          fi
+      
+      - name: Update version in files
+        if: steps.check.outputs.should_release == 'true' && github.event_name == 'push'
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          
+          # 更新 package.json
+          jq --arg v "$VERSION" '.version = $v' package.json > package.json.tmp && mv package.json.tmp package.json
+          
+          # 更新 tauri.conf.json
+          jq --arg v "$VERSION" '.package.version = $v' src-tauri/tauri.conf.json > tauri.conf.tmp && mv tauri.conf.tmp src-tauri/tauri.conf.json
+          
+          # 更新 Cargo.toml
+          sed -i "s/^version = \".*\"/version = \"$VERSION\"/" src-tauri/Cargo.toml
+          
+          echo "Updated all version references to $VERSION"
+      
+      - name: Commit version updates
+        if: steps.check.outputs.should_release == 'true' && github.event_name == 'push'
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          
+          git add package.json src-tauri/tauri.conf.json src-tauri/Cargo.toml
+          git commit -m "chore: bump version to ${{ steps.version.outputs.version }}" || echo "No changes to commit"
+          git push
+      
+      - name: Create and push tag
+        if: steps.check.outputs.should_release == 'true' && github.event_name == 'push'
+        run: |
+          VERSION="v${{ steps.version.outputs.version }}"
+          
+          git tag -a "$VERSION" -m "Release $VERSION"
+          git push origin "$VERSION"
+          
+          echo "Created and pushed tag $VERSION"
+
   # 代码检查
   lint-and-typecheck:
     name: Lint & Type Check
+    needs: prepare-release
+    if: needs.prepare-release.outputs.should_release == 'true'
     runs-on: ubuntu-latest
     
     steps:
@@ -47,9 +133,9 @@ jobs:
   # 构建 Web 版本
   build-web:
     name: Build Web Version
-    needs: lint-and-typecheck
+    needs: [prepare-release, lint-and-typecheck]
+    if: needs.prepare-release.outputs.should_release == 'true' && (github.event_name == 'push' || github.event.inputs.build_web == 'true')
     runs-on: ubuntu-latest
-    if: github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && github.event.inputs.build_web == 'true')
     
     steps:
       - uses: actions/checkout@v4
@@ -64,7 +150,6 @@ jobs:
         run: |
           npm cache clean --force
           npm install --force
-          # Force install platform-specific rollup binary
           npm install @rollup/rollup-linux-x64-gnu --force
       
       - name: Build Web
@@ -77,11 +162,11 @@ jobs:
           path: dist/
           retention-days: 7
 
-  # 构建 Tauri 版本（多平台）
+  # 构建 Tauri 版本
   build-tauri:
     name: Build Tauri - ${{ matrix.platform.name }}
-    needs: lint-and-typecheck
-    if: github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && github.event.inputs.build_tauri == 'true')
+    needs: [prepare-release, lint-and-typecheck]
+    if: needs.prepare-release.outputs.should_release == 'true' && (github.event_name == 'push' || github.event.inputs.build_tauri == 'true')
     strategy:
       fail-fast: false
       matrix:
@@ -125,14 +210,13 @@ jobs:
         if: matrix.platform.os == 'ubuntu-latest'
         run: |
           sudo apt-get update
-          # For Ubuntu 24.04, we need to use webkit2gtk-4.1 instead of 4.0
           sudo apt-get install -y libgtk-3-dev libwebkit2gtk-4.1-dev librsvg2-dev
       
       - name: Install dependencies
         run: |
           npm cache clean --force
           npm install --force
-          # Force install platform-specific rollup binary for each target
+          # 安装平台特定的 rollup
           if [ "${{ matrix.platform.rust_target }}" == "x86_64-unknown-linux-gnu" ]; then
             npm install @rollup/rollup-linux-x64-gnu --force
           elif [ "${{ matrix.platform.rust_target }}" == "x86_64-apple-darwin" ]; then
@@ -147,53 +231,6 @@ jobs:
       - name: Build Tauri app
         run: npm run tauri build -- --target ${{ matrix.platform.rust_target }}
       
-      - name: Verify build outputs
-        run: |
-          echo "=== Verifying build outputs for ${{ matrix.platform.name }} ==="
-          if [ "${{ matrix.platform.os }}" == "ubuntu-latest" ]; then
-            # Check for Linux artifacts
-            if ! find src-tauri/target -name "*.deb" -o -name "*.AppImage" | grep -q .; then
-              echo "ERROR: No .deb or .AppImage files found!"
-              exit 1
-            fi
-          elif [ "${{ matrix.platform.os }}" == "macos-latest" ]; then
-            # Check for macOS artifacts
-            if ! find src-tauri/target -name "*.dmg" | grep -q .; then
-              echo "ERROR: No .dmg files found!"
-              exit 1
-            fi
-          elif [ "${{ matrix.platform.os }}" == "windows-latest" ]; then
-            # Check for Windows artifacts
-            if ! find src-tauri/target -name "*.msi" -o -name "*.exe" | grep -q .; then
-              echo "ERROR: No .msi or .exe files found!"
-              exit 1
-            fi
-          fi
-          echo "✓ Build outputs verified"
-        shell: bash
-        
-      - name: List build outputs (Unix)
-        if: matrix.platform.os != 'windows-latest'
-        run: |
-          echo "=== Finding all executables and bundles ==="
-          find src-tauri/target -type f \( -name "*.dmg" -o -name "*.app" -o -name "*.msi" -o -name "*.exe" -o -name "*.deb" -o -name "*.AppImage" -o -name "iprompt*" \) 2>/dev/null || true
-          echo "=== Checking target-specific bundle location ==="
-          ls -la src-tauri/target/${{ matrix.platform.rust_target }}/release/bundle/ 2>/dev/null || true
-      
-      - name: List build outputs (Windows)
-        if: matrix.platform.os == 'windows-latest'
-        shell: pwsh
-        run: |
-          Write-Host "=== Finding all executables and bundles ==="
-          Get-ChildItem -Path "src-tauri\target" -Recurse -Include @("*.msi", "*.exe", "*.nsis", "iprompt*") -ErrorAction SilentlyContinue | ForEach-Object { Write-Host $_.FullName }
-          Write-Host "=== Checking target-specific bundle location ==="
-          $bundlePath = "src-tauri\target\${{ matrix.platform.rust_target }}\release\bundle"
-          if (Test-Path $bundlePath) {
-            Get-ChildItem $bundlePath -Recurse -ErrorAction SilentlyContinue | ForEach-Object { Write-Host $_.FullName }
-          } else {
-            Write-Host "Bundle directory not found: $bundlePath"
-          }
-        
       - name: Upload artifacts (Linux)
         if: matrix.platform.os == 'ubuntu-latest'
         uses: actions/upload-artifact@v4
@@ -230,12 +267,11 @@ jobs:
           retention-days: 7
           if-no-files-found: error
 
-  # 创建 Release（仅在打 tag 时触发）
-  release:
-    name: Create Release
+  # 创建 GitHub Release
+  create-release:
+    name: Create GitHub Release
     runs-on: ubuntu-latest
-    needs: [lint-and-typecheck, build-web, build-tauri]
-    if: startsWith(github.ref, 'refs/tags/v')
+    needs: [prepare-release, build-web, build-tauri]
     permissions:
       contents: write
     
@@ -247,98 +283,48 @@ jobs:
         with:
           path: artifacts
       
-      - name: Display structure of downloaded files
-        run: |
-          echo "=== All downloaded artifacts ==="
-          ls -la artifacts/
-          echo ""
-          echo "=== Contents of each artifact directory ==="
-          for dir in artifacts/*/; do
-            echo "Directory: $dir"
-            find "$dir" -type f -name "*" | head -20
-            echo "---"
-          done
-      
       - name: Create Web archive
         run: |
           cd artifacts/web-dist
-          zip -r ../../iprompt-web-${{ github.ref_name }}.zip .
+          zip -r ../../iprompt-web-v${{ needs.prepare-release.outputs.version }}.zip .
           cd ../..
-      
-      - name: Verify artifacts exist
-        run: |
-          echo "=== Checking for Tauri artifacts ==="
-          artifact_count=0
-          
-          for platform in Linux macOS-x64 macOS-arm64 Windows; do
-            if [ -d "artifacts/tauri-$platform" ]; then
-              echo "Found artifacts for $platform:"
-              find "artifacts/tauri-$platform" -type f | head -10
-              artifact_count=$((artifact_count + 1))
-            else
-              echo "WARNING: No artifacts found for $platform"
-            fi
-          done
-          
-          if [ $artifact_count -eq 0 ]; then
-            echo "ERROR: No Tauri artifacts found!"
-            exit 1
-          fi
-          
-          echo "Found artifacts for $artifact_count platforms"
       
       - name: Prepare release assets
         run: |
           mkdir -p release-assets
           
-          # Copy Web archive
-          cp iprompt-web-${{ github.ref_name }}.zip release-assets/
+          # Web 版本
+          cp iprompt-web-v${{ needs.prepare-release.outputs.version }}.zip release-assets/
           
-          # Copy Linux artifacts
+          # Linux
           if [ -d "artifacts/tauri-Linux" ]; then
             find artifacts/tauri-Linux -name "*.deb" -exec cp {} release-assets/ \;
             find artifacts/tauri-Linux -name "*.AppImage" -exec cp {} release-assets/ \;
             find artifacts/tauri-Linux -name "*.rpm" -exec cp {} release-assets/ \;
-          else
-            echo "WARNING: No Linux artifacts to copy"
           fi
           
-          # Copy macOS x64 artifacts
+          # macOS
           if [ -d "artifacts/tauri-macOS-x64" ]; then
-            find artifacts/tauri-macOS-x64 -name "*.dmg" -exec cp {} release-assets/iprompt_${{ github.ref_name }}_x64.dmg \;
-          else
-            echo "WARNING: No macOS x64 artifacts to copy"
+            find artifacts/tauri-macOS-x64 -name "*.dmg" -exec cp {} release-assets/iprompt_v${{ needs.prepare-release.outputs.version }}_x64.dmg \;
           fi
-          
-          # Copy macOS arm64 artifacts
           if [ -d "artifacts/tauri-macOS-arm64" ]; then
-            find artifacts/tauri-macOS-arm64 -name "*.dmg" -exec cp {} release-assets/iprompt_${{ github.ref_name }}_aarch64.dmg \;
-          else
-            echo "WARNING: No macOS arm64 artifacts to copy"
+            find artifacts/tauri-macOS-arm64 -name "*.dmg" -exec cp {} release-assets/iprompt_v${{ needs.prepare-release.outputs.version }}_aarch64.dmg \;
           fi
           
-          # Copy Windows artifacts
+          # Windows
           if [ -d "artifacts/tauri-Windows" ]; then
             find artifacts/tauri-Windows -name "*.msi" -exec cp {} release-assets/ \;
             find artifacts/tauri-Windows -name "*.exe" -exec cp {} release-assets/ \;
-          else
-            echo "WARNING: No Windows artifacts to copy"
           fi
           
-          # List all release assets
           echo "=== Release assets ==="
           ls -la release-assets/
-          
-          # Verify we have more than just the web archive
-          file_count=$(ls -1 release-assets/ | wc -l)
-          if [ $file_count -le 1 ]; then
-            echo "ERROR: Only found $file_count file(s) in release-assets (expecting more than just web archive)"
-            exit 1
-          fi
       
-      - name: Upload all assets to release
+      - name: Create Release
         uses: softprops/action-gh-release@v1
         with:
+          tag_name: v${{ needs.prepare-release.outputs.version }}
+          name: Release v${{ needs.prepare-release.outputs.version }}
           files: release-assets/*
           draft: true
           prerelease: false
