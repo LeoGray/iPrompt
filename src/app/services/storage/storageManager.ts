@@ -1,5 +1,5 @@
 import { IStorageService, StorageData, StorageUsageInfo } from './types'
-import { WebStorage } from './webStorage'
+import { WebStorageOptimized } from './webStorageOptimized'
 import { TauriStorage } from './tauriStorage'
 
 class StorageManager {
@@ -13,8 +13,8 @@ class StorageManager {
       // Try to migrate data from localStorage to file system
       this.migrateFromLocalStorage()
     } else {
-      console.log('Using Web localStorage storage')
-      this.storage = new WebStorage()
+      console.log('Using Web IndexedDB storage with optimization')
+      this.storage = new WebStorageOptimized()
     }
   }
 
@@ -122,7 +122,22 @@ class StorageManager {
     }
     // On Tauri, file is already saved by exportData()
   }
+
+  // 清理方法
+  destroy() {
+    if (this.storage && 'destroy' in this.storage) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (this.storage as any).destroy()
+    }
+  }
 }
 
 // Export singleton instance
 export const storageManager = new StorageManager()
+
+// 在页面卸载时清理资源
+if (typeof window !== 'undefined') {
+  window.addEventListener('beforeunload', () => {
+    storageManager.destroy()
+  })
+}

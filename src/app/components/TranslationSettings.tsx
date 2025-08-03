@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { Bot, Eye, EyeOff, TestTube, RotateCcw } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { Button } from './ui/button'
@@ -21,7 +21,10 @@ export function TranslationSettings({ settings, onSettingsChange }: TranslationS
   const { toast } = useToast()
   const [showApiKey, setShowApiKey] = useState(false)
   const [testing, setTesting] = useState(false)
-  const [manager] = useState(() => new TranslationManager(settings))
+  
+  // 使用 useMemo 避免每次渲染创建新实例
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const manager = useMemo(() => new TranslationManager(settings), [])
   
   const currentProvider = settings.provider || 'litellm'
   const currentConfig = settings.configs[currentProvider] || {

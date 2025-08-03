@@ -1,8 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { StateCreator, StoreMutatorIdentifier } from 'zustand'
 import { storageManager, StorageData, DEFAULT_STORAGE_DATA } from '../services/storage'
-
-// type PersistListener<T> = (state: T) => void
+import { Prompt } from './promptStore'
 
 export interface PersistOptions<T> {
   name: string
@@ -20,6 +19,19 @@ type PersistImpl = <
   options: PersistOptions<T>
 ) => StateCreator<T, Mps, Mcs, T>
 
+
+
+// 类型安全的日期解析函数
+function parseDateSafely(dateString: unknown): Date {
+  if (typeof dateString === 'string') {
+    const date = new Date(dateString)
+    if (!isNaN(date.getTime())) {
+      return date
+    }
+  }
+  return new Date() // 默认返回当前时间
+}
+
 export const customPersist: PersistImpl = <
   T,
   Mps extends [StoreMutatorIdentifier, unknown][] = [],
@@ -32,48 +44,60 @@ export const customPersist: PersistImpl = <
   let lastSaveTime = Date.now()
   const SAVE_THROTTLE = 1000 // Save at most once per second
 
-  // Default serializer
-  const serialize = options.serialize || ((state: any) => {
-    const stateWithPrompts = state as any & { prompts?: Array<{ category?: string }> }
+  // Default serializer with proper types
+  const serialize = options.serialize || ((state: T) => {
+    // Type assertion based on known structure
+    const stateWithPrompts = state as T & { prompts?: Array<Prompt> }
     const prompts = stateWithPrompts.prompts || []
     const categories = Array.from(new Set(
-      prompts.map((p: { category?: string }) => p.category).filter(Boolean)
-    )) as string[]
-    
+      prompts
+        .map((p: Prompt) => p.category)
+        .filter((category): category is string => Boolean(category))
+    ))
     
     return {
       ...DEFAULT_STORAGE_DATA,
-      prompts,
+      prompts: prompts as Prompt[],
       categories,
       lastModified: new Date().toISOString()
     }
   })
 
-  // Default deserializer
+  // Default deserializer with proper types
   const deserialize = options.deserialize || ((storage: StorageData) => {
-    // Convert date strings back to Date objects
-    const prompts = (storage.prompts || []).map((prompt: any) => ({
-      ...prompt,
-      createdAt: new Date(prompt.createdAt),
-      updatedAt: new Date(prompt.updatedAt),
-      versions: prompt.versions?.map((v: any) => ({
-        ...v,
-        createdAt: new Date(v.createdAt)
-      })) || [],
-      translations: prompt.translations ? Object.fromEntries(
-        Object.entries(prompt.translations).map(([lang, trans]: [string, any]) => [
-          lang,
-          {
-            ...trans,
-            translatedAt: new Date(trans.translatedAt)
-          }
-        ])
-      ) : undefined
-    }))
+    // Convert date strings back to Date objects with type safety
+    interface StoredPrompt {
+      createdAt: unknown
+      updatedAt: unknown
+      versions?: Array<{ createdAt: unknown }>
+      translations?: Record<string, { translatedAt: unknown }>
+    }
+    
+    const prompts = (storage.prompts || []).map((prompt: unknown) => {
+      const storedPrompt = prompt as StoredPrompt
+      return {
+        ...storedPrompt,
+        createdAt: parseDateSafely(storedPrompt.createdAt),
+        updatedAt: parseDateSafely(storedPrompt.updatedAt),
+        versions: storedPrompt.versions?.map(v => ({
+          ...v,
+          createdAt: parseDateSafely(v.createdAt)
+        })) || [],
+        translations: storedPrompt.translations ? Object.fromEntries(
+          Object.entries(storedPrompt.translations).map(([lang, trans]) => [
+            lang,
+            {
+              ...trans,
+              translatedAt: parseDateSafely(trans.translatedAt)
+            }
+          ])
+        ) : undefined
+      }
+    })
     
     return {
       prompts
-    } as any
+    } as unknown as Partial<T>
   })
 
   // Save function with throttling
@@ -104,10 +128,10 @@ export const customPersist: PersistImpl = <
         set({
           ...state,
           isHydrated: true
-        } as any)
+        } as T)
       } else {
         // No data, but still mark as hydrated
-        set({ isHydrated: true } as any)
+        set({ isHydrated: true } as T)
       }
       
       isHydrated = true
@@ -115,7 +139,7 @@ export const customPersist: PersistImpl = <
     } catch (error) {
       console.error('Failed to hydrate state:', error)
       // Even on error, mark as hydrated to show UI
-      set({ isHydrated: true } as any)
+      set({ isHydrated: true } as T)
       onRehydrateStorage?.(undefined, error as Error)
     }
   }
