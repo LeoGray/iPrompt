@@ -1,13 +1,20 @@
 import { useState } from 'react'
-import { Plus, Search, Edit2, Trash2, Copy, Clock, History } from 'lucide-react'
+import { Plus, Search, Edit2, Trash2, Clock, History, Globe, MoreVertical } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { usePromptStore } from '../store/promptStore'
 import { FullScreenEditor } from '../components/FullScreenEditor'
 import { VersionHistoryDialog } from '../components/VersionHistoryDialog'
 import { VersionPreviewTooltip } from '../components/VersionPreviewTooltip'
+import { CopyMenu } from '../components/CopyMenu'
 import { Button } from '../components/ui/button'
 import { Input } from '../components/ui/input'
 import { useToast } from '../components/ui/use-toast'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '../components/ui/dropdown-menu'
 
 export function PromptsPage() {
   const [editorOpen, setEditorOpen] = useState(false)
@@ -28,12 +35,11 @@ export function PromptsPage() {
   
   const prompts = isHydrated ? getFilteredPrompts() : []
   
-  const handleCopy = (content: string) => {
-    navigator.clipboard.writeText(content)
-    toast({
-      title: t('messages.copySuccess'),
-      description: t('messages.copyDescription'),
-    })
+  
+  const handleTranslateInBrowser = (content: string) => {
+    const encodedText = encodeURIComponent(content)
+    const googleTranslateUrl = `https://translate.google.com/?text=${encodedText}`
+    window.open(googleTranslateUrl, '_blank')
   }
   
   const handleDelete = (id: string) => {
@@ -129,14 +135,25 @@ export function PromptsPage() {
                     )}
                   </div>
                   <div className="flex gap-2">
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => handleCopy(prompt.content)}
-                      title={t('common.copy')}
-                    >
-                      <Copy className="w-4 h-4" />
-                    </Button>
+                    <CopyMenu prompt={prompt} />
+                    
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          title={t('common.more')}
+                        >
+                          <MoreVertical className="w-4 h-4" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuItem onClick={() => handleTranslateInBrowser(prompt.content)}>
+                          <Globe className="w-4 h-4 mr-2" />
+                          {t('translation.translateInBrowser')}
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
                     {prompt.versions && prompt.versions.length > 0 && (
                       <Button
                         variant="ghost"

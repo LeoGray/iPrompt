@@ -1,4 +1,5 @@
 import { Prompt } from '../../store/promptStore'
+import { TranslationSettings } from '../../types/translation'
 
 // 存储数据格式
 export interface StorageData {
@@ -6,6 +7,7 @@ export interface StorageData {
   prompts: Prompt[]      // Prompt 数据
   categories: string[]   // 分类列表
   settings?: Record<string, unknown>  // 预留设置项
+  translationSettings?: TranslationSettings  // 翻译设置
   lastModified: string   // 最后修改时间 ISO string
 }
 

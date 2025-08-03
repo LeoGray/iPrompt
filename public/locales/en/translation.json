@@ -7,7 +7,18 @@
     "edit": "Edit",
     "loading": "Loading...",
     "noData": "No data",
-    "version": "Version"
+    "version": "Version",
+    "save": "Save",
+    "search": "Search",
+    "statistics": "Statistics",
+    "total": "Total",
+    "characters": "characters",
+    "yes": "Yes",
+    "no": "No",
+    "more": "More",
+    "copyOptions": "Copy Options",
+    "copyWithTitle": "Copy with Title",
+    "copyContentOnly": "Copy Content Only"
   },
   "editor": {
     "addNewCategory": "Add new category",
@@ -28,6 +39,7 @@
     "selectVersionToCompare": "Select a version to compare",
     "recentVersions": "Recent Versions",
     "moreVersions": "{{count}} more older versions",
+    "versionPreviewDescription": "Version {{version}} - {{date}}",
     "selectCategory": "Select category",
     "shortcuts": {
       "escape": "Cancel (ESC)",
@@ -53,11 +65,13 @@
   "layout": {
     "allPrompts": "All Prompts",
     "categories": "Categories",
-    "promptCount_one": "",
-    "promptCount_other": "",
+    "promptCount": "{{count}} Prompt",
+    "promptCount_one": "{{count}} Prompt",
+    "promptCount_other": "{{count}} Prompts",
     "subtitle": "Prompt Management System",
     "title": "iPrompt",
-    "uncategorized": "Uncategorized"
+    "uncategorized": "Uncategorized",
+    "categoryCount": "{{count}}"
   },
   "messages": {
     "backupDescription": "Data backed up to application directory",
@@ -153,6 +167,46 @@
     "storagePercentage": "{{percentage}}%",
     "storageUsed": "{{used}} used",
     "storageCalculating": "Calculating...",
-    "title": "Settings"
+    "title": "Settings",
+    "general": "General",
+    "translation": "Translation"
+  },
+  "translation": {
+    "translateInBrowser": "Translate in Browser",
+    "aiTranslate": "AI Translation",
+    "needConfig": "Need Configuration",
+    "selectLanguage": "Select Target Language",
+    "selectProvider": "Please select translation service",
+    "translating": "Translating...",
+    "translateSuccess": "Translation Successful",
+    "translateError": "Translation Failed",
+    "testConnection": "Test Connection",
+    "testing": "Testing...",
+    "testSuccess": "Connection Successful",
+    "testFailed": "Connection Failed",
+    "invalidConfig": "Invalid Configuration",
+    "cacheEnabled": "Cache Enabled",
+    "historyCount": "History Count",
+    "languages": {
+      "en": "English",
+      "zh": "Chinese",
+      "ja": "Japanese"
+    },
+    "reset": "Reset",
+    "resetSuccess": "Reset Successful",
+    "resetDescription": "Translation settings have been reset to defaults",
+    "enableTranslation": "Enable Multi-language Translation",
+    "original": "Original",
+    "originalContent": "Original Content",
+    "translatedContent": "{{lang}} Translation",
+    "translateTo": "Translate to {{lang}}",
+    "retranslate": "Retranslate",
+    "notConfigured": "Translation not configured",
+    "configureInSettings": "Please configure translation service in settings",
+    "success": "Translation successful",
+    "failed": "Translation failed",
+    "translatedTo": "Translated to {{lang}}",
+    "moreLanguages": "More Languages",
+    "outdatedWarning": "This translation may be outdated"
   }
 }

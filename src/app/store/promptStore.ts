@@ -1,6 +1,15 @@
 import { create } from 'zustand'
 import { customPersist } from './persistMiddleware'
 
+export interface PromptTranslation {
+  title: string
+  content: string
+  translatedAt: Date
+  provider?: string
+  isOutdated?: boolean
+  sourceHash?: string
+}
+
 export interface Prompt {
   id: string
   title: string
@@ -10,6 +19,7 @@ export interface Prompt {
   createdAt: Date
   updatedAt: Date
   versions?: PromptVersion[]
+  translations?: Record<string, PromptTranslation>
 }
 
 export interface PromptVersion {

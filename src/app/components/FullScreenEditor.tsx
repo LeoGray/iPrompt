@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
-import { usePromptStore } from '../store/promptStore'
+import { usePromptStore, PromptTranslation } from '../store/promptStore'
 import { Button } from './ui/button'
 import { Input } from './ui/input'
 import { Textarea } from './ui/textarea'
@@ -7,6 +7,7 @@ import { useToast } from './ui/use-toast'
 import { useTranslation } from 'react-i18next'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
+import { PromptTranslationTabs } from './PromptTranslationTabs'
 import { 
   X, 
   Save, 
@@ -62,6 +63,8 @@ export function FullScreenEditor({ promptId, isOpen, onClose, mode }: FullScreen
   const [isAddingCategory, setIsAddingCategory] = useState(false)
   const [viewMode, setViewMode] = useState<'edit' | 'preview' | 'split'>('edit')
   const [selectedVersionForPreview, setSelectedVersionForPreview] = useState<{ content: string; title: string } | null>(null)
+  const [translations, setTranslations] = useState<Record<string, PromptTranslation>>({})
+  const [enableTranslation, setEnableTranslation] = useState(false)
   
   const prompts = usePromptStore((state) => state.prompts)
   const getPromptById = usePromptStore((state) => state.getPromptById)
@@ -85,11 +88,15 @@ export function FullScreenEditor({ promptId, isOpen, onClose, mode }: FullScreen
       setContent(prompt.content)
       setCategory(prompt.category || '')
       setTags(prompt.tags?.join(', ') || '')
+      setTranslations(prompt.translations || {})
+      setEnableTranslation(!!prompt.translations && Object.keys(prompt.translations).length > 0)
     } else if (mode === 'create') {
       setTitle('')
       setContent('')
       setCategory('')
       setTags('')
+      setTranslations({})
+      setEnableTranslation(false)
     }
   }, [prompt, mode])
   
@@ -108,6 +115,7 @@ export function FullScreenEditor({ promptId, isOpen, onClose, mode }: FullScreen
       content,
       category: category || undefined,
       tags: tags.split(',').map(tag => tag.trim()).filter(Boolean),
+      translations: enableTranslation && Object.keys(translations).length > 0 ? translations : undefined
     }
     
     if (mode === 'edit' && promptId) {
@@ -331,7 +339,36 @@ export function FullScreenEditor({ promptId, isOpen, onClose, mode }: FullScreen
             
             {/* 内容编辑区 */}
             <div className="flex-1 flex flex-col">
-              {viewMode === 'edit' && (
+              {/* 翻译功能开关 */}
+              <div className="flex items-center justify-between p-2 border-b">
+                <div className="flex items-center gap-2">
+                  <label htmlFor="enable-translation" className="text-sm font-medium">
+                    {t('translation.enableTranslation')}
+                  </label>
+                  <input
+                    type="checkbox"
+                    id="enable-translation"
+                    checked={enableTranslation}
+                    onChange={(e) => setEnableTranslation(e.target.checked)}
+                    className="h-4 w-4"
+                  />
+                </div>
+              </div>
+              
+              {/* 根据是否启用翻译显示不同的界面 */}
+              {enableTranslation ? (
+                <PromptTranslationTabs
+                  title={title}
+                  content={content}
+                  translations={translations}
+                  onTranslationChange={setTranslations}
+                  onTitleChange={setTitle}
+                  onContentChange={setContent}
+                  viewMode={viewMode}
+                />
+              ) : (
+                <>
+                  {viewMode === 'edit' && (
                 <>
                   <div className="flex items-center gap-1 p-2 border-b flex-wrap">
                     {/* 标题组 */}
@@ -592,6 +629,8 @@ export function FullScreenEditor({ promptId, isOpen, onClose, mode }: FullScreen
                     </div>
                   </div>
                 </div>
+              )}
+                </>
               )}
             </div>
           </div>

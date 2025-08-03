@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Settings, Download, Upload, Save, HardDrive } from 'lucide-react'
+import { Settings, Download, Upload, Save, HardDrive, Database, Languages } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import {
   Dialog,
@@ -10,14 +10,17 @@ import {
 } from './ui/dialog'
 import { Button } from './ui/button'
 import { Progress } from './ui/progress'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs'
 import { storageManager } from '../services/storage'
 import { usePromptStore } from '../store/promptStore'
+import { useTranslationStore } from '../store/translationStore'
 import { useToast } from './ui/use-toast'
 import { formatBytes } from '../utils/formatters'
 import type { StorageUsageInfo } from '../services/storage/types'
 import { cn } from '@/lib/utils'
 import { PlatformInfo } from './PlatformInfo'
 import { SyncFromWeb } from './SyncFromWeb'
+import { TranslationSettings } from './TranslationSettings'
 
 export function SettingsDialog() {
   const [open, setOpen] = useState(false)
@@ -27,10 +30,12 @@ export function SettingsDialog() {
   const { toast } = useToast()
   const { t, i18n } = useTranslation()
   const prompts = usePromptStore((state) => state.prompts)
+  const { settings: translationSettings, updateSettings, loadSettings } = useTranslationStore()
 
   useEffect(() => {
     if (open) {
       loadStorageInfo()
+      loadSettings()
     }
   }, [open, prompts])
 
@@ -114,11 +119,23 @@ export function SettingsDialog() {
           <Settings className="h-4 w-4" />
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[525px]">
         <DialogHeader>
           <DialogTitle>{t('settings.title')}</DialogTitle>
         </DialogHeader>
-        <div className="grid gap-4 py-4">
+        <Tabs defaultValue="general" className="mt-4">
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="general">
+              <Database className="h-4 w-4 mr-2" />
+              {t('settings.general')}
+            </TabsTrigger>
+            <TabsTrigger value="translation">
+              <Languages className="h-4 w-4 mr-2" />
+              {t('settings.translation')}
+            </TabsTrigger>
+          </TabsList>
+          
+          <TabsContent value="general" className="space-y-4">
           <div className="space-y-2">
             <h3 className="text-sm font-medium">{t('settings.dataManagement')}</h3>
             <div className="space-y-2">
@@ -213,10 +230,18 @@ export function SettingsDialog() {
             ) : null}
           </div>
           
-          <div className="border-t pt-4 mt-2">
-            <PlatformInfo />
-          </div>
-        </div>
+            <div className="border-t pt-4 mt-2">
+              <PlatformInfo />
+            </div>
+          </TabsContent>
+          
+          <TabsContent value="translation" className="space-y-4">
+            <TranslationSettings 
+              settings={translationSettings}
+              onSettingsChange={updateSettings}
+            />
+          </TabsContent>
+        </Tabs>
       </DialogContent>
     </Dialog>
   )

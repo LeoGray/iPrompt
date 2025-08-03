@@ -1,0 +1,17 @@
+/* 修复 Tabs 组件的 flex 布局 */
+.tabs-root {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+/* 确保 TabsContent 正确填充剩余空间 */
+[role="tabpanel"] {
+  flex: 1;
+  min-height: 0;
+}
+
+/* 隐藏非活动标签时清除所有空间 */
+[data-state="inactive"] {
+  display: none;
+}

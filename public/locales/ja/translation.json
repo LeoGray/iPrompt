@@ -12,7 +12,9 @@
     "version": "バージョン",
     "statistics": "統計",
     "total": "合計",
-    "characters": "文字"
+    "characters": "文字",
+    "yes": "はい",
+    "no": "いいえ"
   },
   "layout": {
     "title": "iPrompt",
@@ -81,6 +83,8 @@
   "settings": {
     "title": "設定",
     "description": "プロンプトデータを管理",
+    "general": "一般",
+    "translation": "翻訳",
     "dataManagement": "データ管理",
     "exportData": "データをエクスポート",
     "importData": "データをインポート",
@@ -170,6 +174,28 @@
       "content": "提供した作業内容に基づいて、プロフェッショナルな週報を生成してください。フォーマット要件：\n1. 今週完了した作業（重要度順）\n2. 遭遇した問題と解決策\n3. 来週の作業計画\n4. 必要なサポートやリソース\n\n今週の作業内容：\n[ここに今週の作業をリスト]",
       "category": "ライティング",
       "tags": ["週報", "業務総括", "Report"]
+    }
+  },
+  "translation": {
+    "translateInBrowser": "ブラウザで翻訳",
+    "aiTranslate": "AI翻訳",
+    "needConfig": "設定が必要",
+    "selectLanguage": "翻訳言語を選択",
+    "selectProvider": "翻訳サービスを選択してください",
+    "translating": "翻訳中...",
+    "translateSuccess": "翻訳成功",
+    "translateError": "翻訳失敗",
+    "testConnection": "接続テスト",
+    "testing": "テスト中...",
+    "testSuccess": "接続成功",
+    "testFailed": "接続失敗",
+    "invalidConfig": "無効な設定",
+    "cacheEnabled": "キャッシュ有効",
+    "historyCount": "履歴数",
+    "languages": {
+      "en": "英語",
+      "zh": "中国語",
+      "ja": "日本語"
     }
   }
 }

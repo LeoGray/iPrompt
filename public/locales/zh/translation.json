@@ -12,7 +12,13 @@
     "version": "版本",
     "statistics": "统计",
     "total": "总数",
-    "characters": "字符"
+    "characters": "字符",
+    "yes": "是",
+    "no": "否",
+    "more": "更多",
+    "copyOptions": "复制选项",
+    "copyWithTitle": "复制标题和内容",
+    "copyContentOnly": "仅复制内容"
   },
   "editor": {
     "addNewCategory": "添加新分类",
@@ -33,6 +39,7 @@
     "selectVersionToCompare": "选择一个版本以对比",
     "recentVersions": "最近版本",
     "moreVersions": "还有 {{count}} 个更早的版本",
+    "versionPreviewDescription": "版本 {{version}} - {{date}}",
     "selectCategory": "选择分类",
     "shortcuts": {
       "escape": "取消 (ESC)",
@@ -145,6 +152,8 @@
   "settings": {
     "title": "设置",
     "description": "管理您的 Prompt 数据",
+    "general": "常规",
+    "translation": "翻译",
     "dataManagement": "数据管理",
     "exportData": "导出数据",
     "importData": "导入数据",
@@ -183,5 +192,60 @@
     },
     "getStarted": "开始使用",
     "skipIntro": "跳过介绍"
+  },
+  "translation": {
+    "translateInBrowser": "在浏览器中翻译",
+    "aiTranslate": "AI 翻译",
+    "needConfig": "需要配置",
+    "selectLanguage": "选择目标语言",
+    "selectProvider": "请选择翻译服务",
+    "translating": "翻译中...",
+    "translateSuccess": "翻译成功",
+    "translateError": "翻译失败",
+    "testConnection": "测试连接",
+    "testing": "测试中...",
+    "testSuccess": "连接成功",
+    "testFailed": "连接失败",
+    "invalidConfig": "配置无效",
+    "cacheEnabled": "缓存已启用",
+    "historyCount": "历史记录数",
+    "reset": "重置",
+    "resetSuccess": "重置成功",
+    "resetDescription": "翻译设置已重置为默认值",
+    "enableTranslation": "启用多语言翻译",
+    "original": "原文",
+    "originalContent": "原始内容",
+    "translatedContent": "{{lang}}译文",
+    "translateTo": "翻译为{{lang}}",
+    "retranslate": "重新翻译",
+    "notConfigured": "翻译功能未配置",
+    "configureInSettings": "请在设置中配置翻译服务",
+    "success": "翻译成功",
+    "failed": "翻译失败",
+    "translatedTo": "已翻译为{{lang}}",
+    "moreLanguages": "更多语言",
+    "outdatedWarning": "此翻译可能已过期",
+    "languages": {
+      "en": "英文",
+      "zh": "中文",
+      "ja": "日文"
+    }
+  },
+  "common": {
+    "save": "保存",
+    "cancel": "取消",
+    "delete": "删除",
+    "edit": "编辑",
+    "copy": "复制",
+    "confirm": "确定",
+    "search": "搜索",
+    "loading": "加载中...",
+    "noData": "暂无数据",
+    "version": "版本",
+    "statistics": "统计",
+    "total": "总数",
+    "characters": "字符",
+    "yes": "是",
+    "no": "否"
   }
 }

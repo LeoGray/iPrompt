@@ -59,7 +59,16 @@ export const customPersist: PersistImpl = <
       versions: prompt.versions?.map((v: any) => ({
         ...v,
         createdAt: new Date(v.createdAt)
-      })) || []
+      })) || [],
+      translations: prompt.translations ? Object.fromEntries(
+        Object.entries(prompt.translations).map(([lang, trans]: [string, any]) => [
+          lang,
+          {
+            ...trans,
+            translatedAt: new Date(trans.translatedAt)
+          }
+        ])
+      ) : undefined
     }))
     
     return {
